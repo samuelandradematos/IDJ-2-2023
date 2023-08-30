@@ -1,0 +1,1 @@
+Repositório destinado para os trabalhos individuais da disciplia Introdução ao Desenvolvimento de Jogos.
