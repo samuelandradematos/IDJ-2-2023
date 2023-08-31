@@ -3,8 +3,7 @@
 #define GAME_H_
 #include <string>
 #include <cstdlib>
-#define INCLUDE_SDL_IMAGE
-#define INCLUDE_SDL_MIXER
+#define INCLUDE_SDL
 #include "src/include/SDL2/SDL_include.h"
 #include "State.h"
 #endif  // GAME_H_
