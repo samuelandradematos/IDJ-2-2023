@@ -16,12 +16,12 @@
 *************************************************/
 #ifdef INCLUDE_SDL 
 	#ifdef _WIN32
-		#include <SDL2/SDL.h>
+		#include "SDL.h"
 	#elif __APPLE__
 		#include "TargetConditionals.h"
-		#include <SDL2/SDL.h>
+		#include "SDL.h"
 	#elif __linux__
-		#include <SDL2/SDL.h>
+		#include "SDL.h"
 	#else
 		#error "Unknown compiler"
 	#endif
@@ -34,12 +34,12 @@
 *************************************************/
 #ifdef INCLUDE_SDL_IMAGE 
 	#ifdef _WIN32
-		#include <SDL2/SDL_image.h>
+		#include "SDL_image.h"
 	#elif __APPLE__
 		#include "TargetConditionals.h"
-		#include <SDL2/SDL_image.h>
+		#include "SDL_image.h"
 	#elif __linux__
-		#include <SDL2/SDL_image.h>
+		#include "SDL_image.h"
 	#else
 		#error "Unknown compiler"
 	#endif
@@ -52,12 +52,12 @@
 *************************************************/
 #ifdef INCLUDE_SDL_MIXER 
 	#ifdef _WIN32
-		#include <SDL2/SDL_mixer.h>
+		#include "SDL_mixer.h"
 	#elif __APPLE__
 		#include "TargetConditionals.h"
-		#include <SDL2/SDL_mixer.h>
+		#include "SDL_mixer.h"
 	#elif __linux__
-		#include <SDL2/SDL_mixer.h>
+		#include "SDL_mixer.h"
 	#else
 		#error "Unknown compiler"
 	#endif
@@ -70,12 +70,12 @@
 *************************************************/
 #ifdef INCLUDE_SDL_TTF 
 	#ifdef _WIN32
-		#include <SDL2/SDL_ttf.h>
+		#include "SDL_ttf.h"
 	#elif __APPLE__
 		#include "TargetConditionals.h"
-		#include <SDL2/SDL_ttf.h>
+		#include "SDL_ttf.h"
 	#elif __linux__
-		#include <SDL2/SDL_ttf.h>
+		#include "SDL_ttf.h"
 	#else
 		#error "Unknown compiler"
 	#endif
@@ -88,12 +88,12 @@
 *************************************************/
 #ifdef INCLUDE_SDL_NET 
 	#ifdef _WIN32
-		#include <SDL2/SDL_net.h>
+		#include "SDL_net.h"
 	#elif __APPLE__
 		#include "TargetConditionals.h"
-		#include <SDL2/SDL_net.h>
+		#include "SDL_net.h"
 	#elif __linux__
-		#include <SDL2/SDL_net.h>
+		#include "SDL_net.h"
 	#else
 		#error "Unknown compiler"
 	#endif

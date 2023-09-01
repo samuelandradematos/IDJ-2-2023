@@ -1,8 +1,6 @@
 
 #include "Game.h"
 
-namespace std{
-
 Game::Game(const char* title, int width , int height) {
     if (instance != nullptr) {
         this->instance;
@@ -56,15 +54,15 @@ void Game::Run() {
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
     }
+
+    delete Game;
 }
 
-Game& Game::GetInstance(){
+Game& Game::GetInstance() {
     if (instance != nullptr) {
-        return *instance;
+        return instance;
     } else {
-        // instance = new(Game)
-        return (*instance);
+        Game("Samuel_170155943", 1024, 600);
+        return instance;
     }
 }
-
-};  // namespace std

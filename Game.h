@@ -8,7 +8,6 @@
 #include "State.h"
 #endif  // GAME_H_
 
-namespace std {
 class Game {
     private:
         Game(const char* title, int width , int height);
@@ -24,5 +23,3 @@ class Game {
         State* GetState();
         Game& GetInstance();
 };
-};  // namespace std
-

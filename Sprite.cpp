@@ -1,10 +1,9 @@
 #include "Sprite.h"
 #include "Game.h"
 
-namespace std {
-
 Sprite::Sprite() {
     texture = nullptr;
+    Open("img/ocean.jpg");
 }
 
 Sprite::Sprite(const char* file) {
@@ -65,6 +64,3 @@ bool Sprite::IsOpen() {
     else
         return false;
 }
-
-
-}  // namespace std

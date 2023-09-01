@@ -4,8 +4,7 @@
 #include "src/include/SDL2/SDL_include.h"
 #endif  // SPRITE_H_
 
-namespace std {
-class Sprite: public Game {
+class Sprite {
     public:
         Sprite();
         explicit Sprite(const char* file);
@@ -22,4 +21,3 @@ class Sprite: public Game {
         int height;
         SDL_Rect clipRect;
 };
-};  // namespace std

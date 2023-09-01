@@ -5,8 +5,6 @@
 #include "src/include/SDL2/SDL_include.h"
 #endif  // MUSIC_H_
 
-namespace std {
-
 class Music {
     public:
         Music();
@@ -19,5 +17,4 @@ class Music {
         Mix_Music* music;
 };
 
-};  // namespace std
 

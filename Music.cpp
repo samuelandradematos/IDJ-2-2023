@@ -1,9 +1,6 @@
 #include <iostream>
 #include "Music.h"
 
-
-namespace std {
-
 Music::Music() {
     music = nullptr;
 }
@@ -22,7 +19,7 @@ void Music::Play(int times = -1) {
     if (music != nullptr) {
         Mix_PlayMusic(music, times);
     } else {
-        cout << "Não há musica para tocar";
+        std::cout << "Não há musica para tocar";
     }
 }
 
@@ -33,7 +30,7 @@ void Music::Stop(int msToStop = 1500) {
 void Music::Open(const char* file) {
     music = Mix_LoadMUS(file);
     if (music = nullptr) {
-        cout << SDL_GetError();
+        std::cout << SDL_GetError();
     }
 }
 
@@ -44,4 +41,3 @@ bool Music::IsOpen() {
         return false
 }
 
-}  // namespace std

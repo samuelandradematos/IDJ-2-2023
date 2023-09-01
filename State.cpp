@@ -1,11 +1,11 @@
 #include "State.h"
-namespace std {
 
 State::State() {
     quitRequested = false;
     // cppcheck-suppress [noCopyConstructor,noOperatorEq]
     bg = new(Sprite);
-    music = new(Music);
+    Music song("audio/stageStage.ogg");
+    music = song;
 }
 
 void State::LoadAssets() {
@@ -24,5 +24,3 @@ void State::Render() {
 bool State::QuitRequested() {
     return quitRequested;
 }
-
-}  // namespace std

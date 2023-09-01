@@ -4,8 +4,6 @@
 #include "Sprite.h"
 #endif  // STATE_H_
 
-namespace std{
-
 class State {
     public:
         State();
@@ -14,9 +12,9 @@ class State {
         void Update(float dt);
         void Render();
     private:
-        Sprite* bg;
-        Music* music;
+        Sprite bg;
+        Music music;
         bool quitRequested;
 };
-};  // namespace std
+
 
