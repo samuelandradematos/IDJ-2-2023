@@ -25,7 +25,7 @@ Game::Game(const char* title, int width , int height) {
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         // cppcheck-suppress [noCopyConstructor,noOperatorEq]
         state = new(State);
-        instance = this;
+        instance = this;  // Provavelmente está errado
     }
 }
 
