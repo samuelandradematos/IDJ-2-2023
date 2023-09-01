@@ -1,8 +1,8 @@
 
 #ifndef GAME_H_
 #define GAME_H_
-#include <string>
 #include <cstdlib>
+#include <iostream>
 #define INCLUDE_SDL
 #include "src/include/SDL2/SDL_include.h"
 #include "State.h"
@@ -11,7 +11,7 @@
 namespace std {
 class Game {
     private:
-        Game(string title, int width , int height);
+        Game(const char* title, int width , int height);
         Game* instance;
         SDL_Window* window;
         SDL_Renderer* renderer;

@@ -1,30 +1,69 @@
+
 #include "Game.h"
-#define INCLUDE_SDL_IMAGE
-#define INCLUDE_SDL_MIXER
-#include "src/include/SDL2/SDL_include.h"
 
 namespace std{
 
-Game::Game(string title, int width , int height) {
-    int stopCond;
+Game::Game(const char* title, int width , int height) {
     if (instance != nullptr) {
         this->instance;
     } else {
-        stopCond = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
+        int stopCond = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
         if (stopCond != 0) {
-            
+            cout << SDL_GetError();
+            return;
         }
-        this->this;
+        stopCond = IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF);
+        if (stopCond = 0) {
+            cout << "Image not loaded";
+            return;
+        }
+        stopCond = Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024);
+        if (stopCond != 0) {
+            cout << SDL_GetError();
+            return;
+        }
+        Mix_AllocateChannels(32);
+        window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        // cppcheck-suppress [noCopyConstructor,noOperatorEq]
+        state = new(State);
+        instance = this;
+    }
+}
+
+Game::~Game() {
+    delete state;
+    Mix_CloseAudio();
+    Mix_Quit();
+    IMG_Quit();
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
+State* Game::GetState() {
+    return state;
+}
+
+SDL_Renderer* Game::GetRenderer() {
+    return renderer;
+}
+
+void Game::Run() {
+    while (true) {
+        state->Update(1.0);
+        state->Render();
+        SDL_RenderPresent(renderer);
+        SDL_Delay(33);
     }
 }
 
 Game& Game::GetInstance(){
-    if (Game.instance != nullptr) {
+    if (instance != nullptr) {
         return *instance;
-    }
-    else{
-        *instance = new(Game);
-        return (*instance)
+    } else {
+        // instance = new(Game)
+        return (*instance);
     }
 }
 

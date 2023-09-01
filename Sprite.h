@@ -1,17 +1,16 @@
 #ifndef SPRITE_H_
 #define SPRITE_H_
-#include <string>
 #define INCLUDE_SDL_IMAGE
 #include "src/include/SDL2/SDL_include.h"
 #endif  // SPRITE_H_
 
 namespace std {
-class Sprite {
+class Sprite: public Game {
     public:
         Sprite();
-        explicit Sprite(string file);
+        explicit Sprite(const char* file);
         ~Sprite();
-        void Open(string file);
+        void Open(const char* file);
         void SetClip(int x, int y, int w, int h);
         void Render(int x, int y);
         int GetWidth();
