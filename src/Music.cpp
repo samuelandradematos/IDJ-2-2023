@@ -31,7 +31,7 @@ void Music::Open(const char* file) {
     if (music != nullptr) {
         Mix_FreeMusic(music);
     }
-    
+
     music = Mix_LoadMUS(file);
     if (music == nullptr) {
         std::cout << SDL_GetError() << std::endl;
@@ -39,8 +39,6 @@ void Music::Open(const char* file) {
 }
 
 bool Music::IsOpen() {
-    if (music != nullptr)
-        return true;
-    return false;
+    return music != nullptr;
 }
 

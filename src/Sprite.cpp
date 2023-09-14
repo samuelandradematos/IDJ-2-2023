@@ -1,13 +1,15 @@
 #include "Sprite.h"
 #include "Game.h"
 
-Sprite::Sprite() {
+Sprite::Sprite(const GameObject& associated): Component(associated) {
     texture = nullptr;
 }
 
-Sprite::Sprite(const char* file) {
+Sprite::Sprite(const GameObject& associated, const char* file) {
     texture = nullptr;
     Open(file);
+    associated.box.h = height;
+    associated.box.w = width;
 }
 
 Sprite::~Sprite() {
@@ -64,4 +66,14 @@ bool Sprite::IsOpen() {
         return true;
     else
         return false;
+}
+
+void Sprite::Update(float dt) {
+}
+
+void Sprite::Render() {
+}
+
+bool Sprite::Is(const char* type) {
+    return type == "Sprite";
 }

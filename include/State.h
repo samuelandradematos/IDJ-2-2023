@@ -1,9 +1,14 @@
-#ifndef STATE_H_
-#define STATE_H_
+#ifndef INCLUDE_STATE_H_
+#define INCLUDE_STATE_H_
 #include <iostream>
+#include <vector>
+#include <memory>
 #include "Music.h"
 #include "Sprite.h"
+#include "GameObject.h"
+#include "Vec2.h"
 
+class GameObject;
 
 class State {
     public:
@@ -17,6 +22,9 @@ class State {
         Sprite bg;
         Music music;
         bool quitRequested;
+        void Input();
+        void AddObject(int mouseX, int mouseY);
+        std::vector<std::unique_ptr<GameObject>> objectArray;
 };
 
-#endif  // STATE_H_
+#endif  // INCLUDE_STATE_H_

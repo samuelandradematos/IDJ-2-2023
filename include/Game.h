@@ -1,6 +1,6 @@
 
-#ifndef GAME_H_
-#define GAME_H_
+#ifndef INCLUDE_GAME_H_
+#define INCLUDE_GAME_H_
 #include <cstdlib>
 #include <iostream>
 #define INCLUDE_SDL
@@ -25,4 +25,4 @@ class Game {
         static Game& GetInstance();
 };
 
-#endif  // GAME_H_
+#endif  // INCLUDE_GAME_H_
