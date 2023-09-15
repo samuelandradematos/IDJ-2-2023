@@ -7,8 +7,8 @@
 #include "Sprite.h"
 #include "GameObject.h"
 #include "Vec2.h"
-
-class GameObject;
+#include "Sound.h"
+#include "Face.h"
 
 class State {
     public:
@@ -19,7 +19,6 @@ class State {
         void Update(float dt);
         void Render();
     private:
-        Sprite bg;
         Music music;
         bool quitRequested;
         void Input();

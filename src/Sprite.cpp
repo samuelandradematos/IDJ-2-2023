@@ -1,11 +1,12 @@
 #include "Sprite.h"
 #include "Game.h"
 
-Sprite::Sprite(const GameObject& associated): Component(associated) {
+
+Sprite::Sprite(GameObject& associated): Component(associated) {
     texture = nullptr;
 }
 
-Sprite::Sprite(const GameObject& associated, const char* file) {
+Sprite::Sprite(GameObject& associated, const char* file) : Component(associated) {
     texture = nullptr;
     Open(file);
     associated.box.h = height;
@@ -74,6 +75,6 @@ void Sprite::Update(float dt) {
 void Sprite::Render() {
 }
 
-bool Sprite::Is(const char* type) {
+bool Sprite::Is(std::string type) {
     return type == "Sprite";
 }

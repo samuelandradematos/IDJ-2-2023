@@ -1,14 +1,16 @@
 #ifndef INCLUDE_FACE_H_
 #define INCLUDE_FACE_H_
 #include "GameObject.h"
+#include <string>
 
+class GameObject;
 class Face : public Component {
     public:
-        explicit Face(GambeObject& associated);  // NOLINT
+        Face(GameObject& associated);  // NOLINT
         void Damage(int damage);
         void Update(float dt);
         void Render();
-        bool Is(const char* type);
+        bool Is(std::string type);
     private:
         int hitpoints;
 };

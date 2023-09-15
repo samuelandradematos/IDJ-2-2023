@@ -3,13 +3,14 @@
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
 #include "GameObject.h"
+#include <string>
 
 class GameObject;
 
 class Sound : public Component {
     public:
-        explicit Sound(const GameObject& associated);
-        Sound(const GameObject& associated, const char* file);
+        Sound(GameObject& associated);  // NOLINT
+        Sound(GameObject& associated, const char* file);  // NOLINT
         ~Sound();
         void Play(int times = 1);
         void Stop();
@@ -17,7 +18,7 @@ class Sound : public Component {
         bool IsOpen();
         void Update(float dt);
         void Render();
-        void Is(const char* type);
+        bool Is(std::string type);
     private:
         Mix_Chunk* chunk;
         int channel;

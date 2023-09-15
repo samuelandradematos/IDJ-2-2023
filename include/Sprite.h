@@ -3,12 +3,12 @@
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 #include "Component.h"
-
+#include <string>
 
 class Sprite: public Component {
     public:
-        explicit Sprite(const GameObject& associated);
-        explicit Sprite(const GameObject& associated, const char* file);
+        Sprite(GameObject& associated);
+        Sprite(GameObject& associated, const char* file);
         ~Sprite();
         void Open(const char* file);
         void SetClip(int x, int y, int w, int h);
@@ -18,7 +18,7 @@ class Sprite: public Component {
         bool IsOpen();
         void Update(float dt);
         void Render();
-        bool Is(const char* type);
+        bool Is(std::string type);
     private:
         SDL_Texture* texture;
         int width;

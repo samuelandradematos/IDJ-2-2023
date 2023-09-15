@@ -5,8 +5,6 @@
 #include "Component.h"
 #include "Rect.h"
 
-class Component;
-
 class GameObject {
     public:
         GameObject();

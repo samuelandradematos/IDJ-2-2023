@@ -2,15 +2,15 @@
 #include "Sound.h"
 
 
-Sound::Sound(const GameObject& associated): Component(associated) {
+Sound::Sound(GameObject& associated): Component(associated) {
     chunk = nullptr;
 }
 
-Sound::Sound(const GameObject& associated, const char* file) : Sound(associated) {
+Sound::Sound(GameObject& associated, const char* file) : Sound(associated) {
     Open(file);
 }
 
-void Sound::Play(int times = 1) {
+void Sound::Play(int times) {
     channel = Mix_PlayChannel(-1, chunk, times - 1);
     if (channel == -1) {
         std::cout << "Não há canais desponiveis." << std::endl;
@@ -49,7 +49,7 @@ void Sound::Update(float dt) {
 
 void Sound::Render() {}
 
-void Sound::Is(const char* type) {
+bool Sound::Is(std::string type) {
     return type == "Sound";
 }
 

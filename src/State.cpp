@@ -1,8 +1,12 @@
 #include "State.h"
+#include <math.h>
 
 State::State(): music("audio/stageState.ogg") {
-    GameObject auxGO = GameObject::GameObject();
-    bg = Sprite::Sprite(auxGO, "img/ocean.jpg");
+    GameObject auxGO;
+    Sprite* bg = new Sprite(auxGO, "img/ocean.jpg");
+    auxGO.AddComponent(bg);
+    std::unique_ptr<GameObject> unpGO(auxGO);
+    objectArray.push_back(unpGO);
 }
 
 State::~State() {
@@ -13,9 +17,9 @@ void State::LoadAssets() {
 
 void State::Update(float dt) {
     State::Input();
-    for (int i = objectArray.size(); i > 0; i--) {
-        objectArray[i].Update(dt);
-        if (objectArray[i].isDead) {
+    for (int i = objectArray.size() - 1; i > 0; i--) {
+        objectArray[i]->Update(dt);
+        if (objectArray[i]->IsDead()) {
             objectArray.erase(objectArray.begin() + i);
         }
     }
@@ -23,7 +27,7 @@ void State::Update(float dt) {
 
 void State::Render() {
     for (auto i = objectArray.end(); i >= objectArray.begin(); i--) {
-        objectArray[i].Render();
+        (*i)->Render();
     }
 }
 
@@ -32,12 +36,15 @@ bool State::QuitRequested() {
 }
 
 void State::AddObject(int mouseX, int mouseY) {
-    GameObject auxGO = GameObject::GameObject();
-    auxGO.AddComponent(Sprite::Sprite(auxGO, "img/penguinface.png"));
+    GameObject auxGO;
+    Sprite* peng = new Sprite(auxGO, "img/penguinface.png");
+    auxGO.AddComponent(peng);
     auxGO.box.x = mouseX;
     auxGO.box.y = mouseY;
-    auxGO.AddComponent(Sound::Sound(auxGO, "audio/boom.wav"));
-    auxGO.AddComponent(Face::Face(auxGO));
+    Sound* sound = new Sound(auxGO, "audio/boom.wav");
+    Face* face = new Face(auxGO);
+    auxGO.AddComponent(sound);
+    auxGO.AddComponent(face);
     objectArray.emplace_back(auxGO);
 }
 
@@ -67,7 +74,7 @@ void State::Input() {
                 // Esse código, assim como a classe Face, é provisório. Futuramente, para
                 // chamar funções de GameObjects, use objectArray[i]->função() direto.
 
-                if (go->box.Contains({(float)mouseX, (float)mouseY})) {
+                if (go->box.Contains((float)mouseX, (float)mouseY)) {
                     Face* face = (Face*)go->GetComponent("Face");
                     if ( nullptr != face ) {
                         // Aplica dano
@@ -83,7 +90,7 @@ void State::Input() {
             if (event.key.keysym.sym == SDLK_ESCAPE) {
                 quitRequested = true;
             } else {
-                Vec2 objPos = Vec2(200, 0).GetRotated(-PI + PI*(rand_r() % 1001)/500.0) + Vec2(mouseX, mouseY);
+                Vec2 objPos = Vec2(200, 0).GetRotated(-M_PI + M_PI*(rand() % 1001)/500.0) + Vec2(mouseX, mouseY);  // NOLINT
                 AddObject((int)objPos.x, (int)objPos.y);
             }
         }

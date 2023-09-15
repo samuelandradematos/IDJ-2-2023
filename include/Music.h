@@ -7,7 +7,7 @@ class Music {
     public:
         Music();
         ~Music();
-        explicit Music(const char* file);
+        Music(const char* file);
         void Play(int times = -1);
         void Stop(int msToStop = 1500);
         void Open(const char* file);
