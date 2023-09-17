@@ -1,6 +1,7 @@
 #ifndef INCLUDE_GAMEOBJECT_H_
 #define INCLUDE_GAMEOBJECT_H_
 #include <vector>
+#include <string>
 #include <memory>
 #include "Component.h"
 #include "Rect.h"
@@ -15,7 +16,7 @@ class GameObject {
         void RequestDelete();
         void AddComponent(Component* cpt);
         void RemoveComponent(Component* cpt);
-        Component* GetComponent(const char* type);
+        Component* GetComponent(const std::string& type);
         Rect box;
     private:
         std::vector<std::unique_ptr<Component>> components;

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Sprite.h"
 #include "Game.h"
 
@@ -6,22 +7,22 @@ Sprite::Sprite(GameObject& associated): Component(associated) {
     texture = nullptr;
 }
 
-Sprite::Sprite(GameObject& associated, const char* file) : Component(associated) {
+Sprite::Sprite(GameObject& associated, const std::string& file) : Component(associated) {
     texture = nullptr;
     Open(file);
-    associated.box.h = height;
-    associated.box.w = width;
+    associated.box.h = (float)height;
+    associated.box.w = (float)width;
 }
 
 Sprite::~Sprite() {
     SDL_DestroyTexture(texture);
 }
 
-void Sprite::Open(const char* file) {
-    Game& jogo = Game::GetInstance();
+void Sprite::Open(const std::string& file) {
+    Game& game = Game::GetInstance();
     if (texture != nullptr) {
         SDL_DestroyTexture(texture);
-        texture = IMG_LoadTexture(jogo.GetRenderer(), file);
+        texture = IMG_LoadTexture(game.GetRenderer(), file.c_str());
         if (texture == nullptr) {
             std::cout << SDL_GetError() << std::endl;
             return;
@@ -29,7 +30,7 @@ void Sprite::Open(const char* file) {
         SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
     }
 
-    texture = IMG_LoadTexture(jogo.GetRenderer(), file);
+    texture = IMG_LoadTexture(game.GetRenderer(), file.c_str());
     if (texture == nullptr) {
         std::cout << SDL_GetError() << std::endl;
         return;
@@ -45,10 +46,10 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.h = h;
 }
 
-void Sprite::Render(int x, int y) {
+void Sprite::Render() {
     SDL_Rect dstRect;
-    dstRect.x = x;
-    dstRect.y = y;
+    dstRect.x = (int)associated.box.x;
+    dstRect.y = (int)associated.box.y;
     dstRect.w = clipRect.w;
     dstRect.h = clipRect.h;
     SDL_RenderCopy(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect);
@@ -63,16 +64,10 @@ int Sprite::GetWidth() {
 }
 
 bool Sprite::IsOpen() {
-    if (texture != nullptr)
-        return true;
-    else
-        return false;
+    return texture != nullptr;
 }
 
 void Sprite::Update(float dt) {
-}
-
-void Sprite::Render() {
 }
 
 bool Sprite::Is(std::string type) {

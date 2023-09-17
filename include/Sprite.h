@@ -1,18 +1,18 @@
 #ifndef INCLUDE_SPRITE_H_
 #define INCLUDE_SPRITE_H_
+#include <string>
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 #include "Component.h"
-#include <string>
+
 
 class Sprite: public Component {
     public:
         Sprite(GameObject& associated);
-        Sprite(GameObject& associated, const char* file);
+        Sprite(GameObject& associated, const std::string& file);
         ~Sprite();
-        void Open(const char* file);
+        void Open(const std::string& file);
         void SetClip(int x, int y, int w, int h);
-        void Render(int x, int y);
         int GetWidth();
         int GetHeight();
         bool IsOpen();

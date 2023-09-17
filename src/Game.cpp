@@ -1,9 +1,9 @@
-
+#include <iostream>
 #include "Game.h"
 
 Game* Game::instance = nullptr;
 
-Game::Game(const char* title, int width , int height) {
+Game::Game(std::string title, int width , int height) {
     if (instance == nullptr) {
         instance = this;
         int stopCond = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
@@ -26,7 +26,8 @@ Game::Game(const char* title, int width , int height) {
         if (stopCond < 32) {
             std::cout << "MIX_ALLOCATECHANNELS: " << Mix_GetError() << std::endl;
         }
-        window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+
+        window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
         if (window == nullptr) {
             std::cout << "SDL_CREATEWINDOW: " << SDL_GetError() << std::endl;
         }
@@ -55,12 +56,13 @@ SDL_Renderer* Game::GetRenderer() {
 }
 
 void Game::Run() {
-    state = new State;
+    state = new State();
     while (!state->QuitRequested()) {
-        state->Update(1.0);
         state->Render();
+        state->Update(1.0);
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
+
     }
 
     delete instance;
@@ -70,7 +72,7 @@ Game& Game::GetInstance() {
     if (instance != nullptr) {
         return *instance;
     } else {
-        instance = new Game("Samuel_170155943", 1024, 600);
+        instance = new Game("Samuel_Andrade_de_Matos_170155943", 1024, 600);
         return *instance;
     }
 }

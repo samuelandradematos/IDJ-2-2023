@@ -1,3 +1,6 @@
+#include <iostream>
+#include <typeinfo>
+#include <SDL.h>
 #include "GameObject.h"
 
 GameObject::GameObject() {
@@ -15,8 +18,8 @@ void GameObject::Update(float dt) {
 }
 
 void GameObject::Render() {
-    for (auto i = components.end() - 1; i >= components.begin(); i--) {
-        (*i)->Render();
+    for (const auto & component : components) {
+        component->Render();
     }
 }
 
@@ -33,13 +36,18 @@ void GameObject::AddComponent(Component* cpt) {
 }
 
 void GameObject::RemoveComponent(Component* cpt) {
-    components.emplace_back(cpt);
+    for (auto i = components.begin(); i < components.end(); i++) {
+        if (cpt == (Component *) (*i).get()) {
+            components.erase(i);
+        }
+    }
 }
 
-Component* GameObject::GetComponent(const char* type) {
-    for (auto i = components.begin(); i <= components.end(); i++) {
-        if ((*i)->Is(type)) {
-            return (*i).get();
+Component* GameObject::GetComponent(const std::string& type) {
+    std::cout << "GameObject::GetComponent com valor: " << type << std::endl;
+    for (const auto & component : components) {
+        if (component->Is(type)) {
+            return component.get();
         }
     }
     return nullptr;

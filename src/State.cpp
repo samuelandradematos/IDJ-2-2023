@@ -1,12 +1,13 @@
 #include "State.h"
 #include <math.h>
 
-State::State(): music("audio/stageState.ogg") {
-    GameObject auxGO;
-    Sprite* bg = new Sprite(auxGO, "img/ocean.jpg");
-    auxGO.AddComponent(bg);
-    std::unique_ptr<GameObject> unpGO(auxGO);
-    objectArray.push_back(unpGO);
+State::State(): music("Recursos/audio/stageState.ogg") {
+    auto* auxGO = new GameObject();
+    Component* bg = (Component*) new Sprite((*auxGO),"Recursos/img/ocean.jpg");
+    auxGO->AddComponent(bg);
+    objectArray.emplace_back(auxGO);
+    quitRequested = false;
+    music.Play();
 }
 
 State::~State() {
@@ -17,17 +18,17 @@ void State::LoadAssets() {
 
 void State::Update(float dt) {
     State::Input();
-    for (int i = objectArray.size() - 1; i > 0; i--) {
-        objectArray[i]->Update(dt);
-        if (objectArray[i]->IsDead()) {
-            objectArray.erase(objectArray.begin() + i);
+    for (auto i = objectArray.end() - 1; i > objectArray.begin(); i--) {
+        (*i)->Update(dt);
+        if ((*i)->IsDead()) {
+            objectArray.erase(i);
         }
     }
 }
 
 void State::Render() {
-    for (auto i = objectArray.end(); i >= objectArray.begin(); i--) {
-        (*i)->Render();
+    for (const auto & i : objectArray) {
+        i->Render();
     }
 }
 
@@ -36,15 +37,15 @@ bool State::QuitRequested() {
 }
 
 void State::AddObject(int mouseX, int mouseY) {
-    GameObject auxGO;
-    Sprite* peng = new Sprite(auxGO, "img/penguinface.png");
-    auxGO.AddComponent(peng);
-    auxGO.box.x = mouseX;
-    auxGO.box.y = mouseY;
-    Sound* sound = new Sound(auxGO, "audio/boom.wav");
-    Face* face = new Face(auxGO);
-    auxGO.AddComponent(sound);
-    auxGO.AddComponent(face);
+    auto* auxGO = new GameObject();
+    auto* penguin = (Component*) new Sprite((*auxGO), "Recursos/img/penguinface.png");
+    auxGO->AddComponent(penguin);
+    auxGO->box.x = (float)mouseX;
+    auxGO->box.y = (float)mouseY;
+    auto* sound = (Component*) new Sound((*auxGO), "Recursos/audio/boom.wav");
+    auto* face = (Component*) new Face((*auxGO));
+    auxGO->AddComponent(sound);
+    auxGO->AddComponent(face);
     objectArray.emplace_back(auxGO);
 }
 
@@ -73,7 +74,6 @@ void State::Input() {
                 // ao usar get(), violamos esse princípio e estamos menos seguros.
                 // Esse código, assim como a classe Face, é provisório. Futuramente, para
                 // chamar funções de GameObjects, use objectArray[i]->função() direto.
-
                 if (go->box.Contains((float)mouseX, (float)mouseY)) {
                     Face* face = (Face*)go->GetComponent("Face");
                     if ( nullptr != face ) {

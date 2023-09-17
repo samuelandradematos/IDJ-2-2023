@@ -11,7 +11,7 @@ Vec2::Vec2(float x, float y) {
     this->y = y;
 }
 
-Vec2::operator+(Vec2 const& vetor2) {
+Vec2 Vec2::operator+(Vec2 const& vetor2) {
     Vec2 res;
     res.x = x + vetor2.x;
     res.y = y + vetor2.y;

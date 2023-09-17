@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Face.h"
 #include "Sound.h"
 
@@ -17,7 +18,8 @@ void Face::Damage(int damage) {
 
 void Face::Update(float dt) {}
 
-void Face::Render() {}
+void Face::Render() {
+}
 
 bool Face::Is(std::string type) {
     return type == "Face";

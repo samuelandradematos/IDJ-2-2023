@@ -6,7 +6,7 @@ Sound::Sound(GameObject& associated): Component(associated) {
     chunk = nullptr;
 }
 
-Sound::Sound(GameObject& associated, const char* file) : Sound(associated) {
+Sound::Sound(GameObject& associated, const std::string& file) : Component(associated) {
     Open(file);
 }
 
@@ -24,8 +24,8 @@ void Sound::Stop() {
     }
 }
 
-void Sound::Open(const char* file) {
-    chunk = Mix_LoadWAV(file);
+void Sound::Open(std::string file) {
+    chunk = Mix_LoadWAV(file.c_str());
     if (chunk == nullptr) {
         std::cout << SDL_GetError() << std::endl;
     }
@@ -47,7 +47,8 @@ Sound::~Sound() {
 void Sound::Update(float dt) {
 }
 
-void Sound::Render() {}
+void Sound::Render() {
+}
 
 bool Sound::Is(std::string type) {
     return type == "Sound";

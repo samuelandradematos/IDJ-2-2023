@@ -2,7 +2,9 @@
 #ifndef INCLUDE_GAME_H_
 #define INCLUDE_GAME_H_
 #include <cstdlib>
+#include <ctime>
 #include <iostream>
+#include <string>
 #define INCLUDE_SDL
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
@@ -11,7 +13,7 @@
 
 class Game {
     private:
-        Game(const char* title, int width , int height);
+        Game(std::string title, int width , int height);
         static Game* instance;
         SDL_Window* window;
         SDL_Renderer* renderer;

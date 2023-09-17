@@ -17,5 +17,5 @@ Rect::Rect(float x, float y, float h, float w) {
 Rect::~Rect() {}
 
 bool Rect::Contains(float pX, float pY) {
-    return ((x + pX <= x + w) && (y + pY <= y + h));
+    return ((pX >= x && pX <= x + w) && (pY >= y && pY <= y + h));
 }
