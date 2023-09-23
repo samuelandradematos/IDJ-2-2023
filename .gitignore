@@ -4,3 +4,4 @@
 /.bin
 /.dep
 GAME.EXE
+/.clang-tidy

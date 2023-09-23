@@ -3,12 +3,12 @@
 #include <fstream>
 #include <sstream>
 
-TileMap::TileMap(GameObject& associated, std::string file, TileSet* tileSet) {
+TileMap::TileMap(GameObject& associated, const std::string& file, TileSet* tileSet) : Component(associated){
     Load(file);
     SetTileSet(tileSet);
 }
 
-void TileMap::Load(std::string file) {
+void TileMap::Load(const std::string& file) {
     std::ifstream map;
     map.open(file);
     std::vector<std::string> dadosDaLinha;
@@ -16,7 +16,7 @@ void TileMap::Load(std::string file) {
     int contaLinha = 0;
 
     if (map.is_open()) {
-        while(std::getline(file,linha)) {
+        while(map.getline(linha)) {
             dadosDaLinha.clear();
 
             std::stringstream str(linha);
@@ -25,10 +25,16 @@ void TileMap::Load(std::string file) {
                 dadosDaLinha.push_back(dado);
             
             if (contaLinha == 0) {
-                for (auto it = dadosDaLinha.begin(); it < dadosDaLinha.end(); it++) {
-                    
-                }
+                mapWidth = stoi(dadosDaLinha[0]);
+                mapHeight = stoi(dadosDaLinha[1]);
+                mapDepth = stoi(dadosDaLinha[2]);
             }
+
+            for (auto it :dadosDaLinha) {
+                tileMatrix.push_back(stoi(it));
+            }
+
+            contaLinha++;
 
         }
 
