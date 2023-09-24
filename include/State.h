@@ -9,6 +9,7 @@
 #include "Vec2.h"
 #include "Sound.h"
 #include "Face.h"
+#include "TileMap.h"
 
 class State {
     public:
@@ -20,6 +21,8 @@ class State {
         void Render();
     private:
         Music music;
+        TileSet* tileSet;
+        TileMap* tileMap;
         bool quitRequested;
         void Input();
         void AddObject(int mouseX, int mouseY);

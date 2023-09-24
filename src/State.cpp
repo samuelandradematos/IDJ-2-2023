@@ -2,15 +2,28 @@
 #include <math.h>
 
 State::State(): music("Recursos/audio/stageState.ogg") {
-    auto* auxGO = new GameObject();
-    Component* bg = (Component*) new Sprite((*auxGO),"Recursos/img/ocean.jpg");
-    auxGO->AddComponent(bg);
-    objectArray.emplace_back(auxGO);
+    // Inicialização do criterio de parada
     quitRequested = false;
+
+    // Inicialização do background e da musica
+    auto* bgGO = new GameObject();
+    Component* bg = (Component*) new Sprite((*bgGO), "Recursos/img/ocean.jpg");
+    bgGO->AddComponent(bg);
+    objectArray.emplace_back(bgGO);
     music.Play();
+
+    // Inicialização do TileSet e TileMap
+    auto* tileGO = new GameObject();
+    tileSet = new TileSet((*tileGO),64,64,"Recursos/img/tileset.png");
+    tileMap = new TileMap((*tileGO),"Recursos/map/tileMap.txt",tileSet);
+    tileGO->AddComponent (tileMap);
+    tileGO->box = {0,0,tileGO->box.w,tileGO->box.h};
+    objectArray.emplace_back(tileGO);
 }
 
 State::~State() {
+    delete tileMap;
+    delete tileSet;
 }
 
 void State::LoadAssets() {

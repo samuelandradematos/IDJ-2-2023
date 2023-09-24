@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Sprite.h"
 #include "Game.h"
+#include "Resources.h"
 
 
 Sprite::Sprite(GameObject& associated): Component(associated) {
@@ -15,22 +16,17 @@ Sprite::Sprite(GameObject& associated, const std::string& file) : Component(asso
 }
 
 Sprite::~Sprite() {
-    SDL_DestroyTexture(texture);
 }
 
 void Sprite::Open(const std::string& file) {
     Game& game = Game::GetInstance();
     if (texture != nullptr) {
-        SDL_DestroyTexture(texture);
-        texture = IMG_LoadTexture(game.GetRenderer(), file.c_str());
-        if (texture == nullptr) {
-            std::cout << SDL_GetError() << std::endl;
-            return;
-        }
-        SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+        texture = Resources::GetImage(file);
+        if (texture != nullptr)
+            SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
     }
 
-    texture = IMG_LoadTexture(game.GetRenderer(), file.c_str());
+    texture = Resources::GetImage(file);
     if (texture == nullptr) {
         std::cout << SDL_GetError() << std::endl;
         return;
@@ -47,9 +43,13 @@ void Sprite::SetClip(int x, int y, int w, int h) {
 }
 
 void Sprite::Render() {
+    Render((int)associated.box.x, (int)associated.box.y);
+}
+
+void Sprite::Render(int x, int y) {
     SDL_Rect dstRect;
-    dstRect.x = (int)associated.box.x;
-    dstRect.y = (int)associated.box.y;
+    dstRect.x = x;
+    dstRect.y = y;
     dstRect.w = clipRect.w;
     dstRect.h = clipRect.h;
     SDL_RenderCopy(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect);

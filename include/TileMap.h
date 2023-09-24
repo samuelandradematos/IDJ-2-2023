@@ -8,9 +8,11 @@ class TileMap : public Component {
     public:
         TileMap(GameObject& associated, const std::string& file, TileSet* tileSet);
         void Load(const std::string& file);
-        void SetTileSet(TileSet* tileSet);
+        void SetTileSet(TileSet* tileSetNew);
         int& At(int x, int y, int z = 0);
+        void Update(float dt);
         void Render();
+        bool Is(std::string type);
         void RenderLayer(int layer, int cameraX = 0, int cameraY = 0);
         int GetWidth();
         int GetHeight();

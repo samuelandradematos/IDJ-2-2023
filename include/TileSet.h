@@ -6,10 +6,11 @@
 #define INCLUDE_TILESET_H_
 #include <string>
 #include "Sprite.h"
+#include "GameObject.h"
 
 class TileSet {
     public:
-        TileSet(int tileWidth, int tileHeight, std::string file);
+        TileSet(GameObject& associated, int tileWidth, int tileHeight, std::string file);
         void RenderTile(unsigned index, float x, float y);
         int GetTileWidth();
         int GetTileHeight();

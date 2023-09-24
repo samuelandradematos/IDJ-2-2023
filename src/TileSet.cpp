@@ -1,17 +1,11 @@
 #include "TileSet.h"
+#include "iostream"
 
-TileSet::TileSet(int tileWidth, int tileHeight, std::string file) {
-    tileW = tileWidth;
-    tileH = tileHeight;
-    GameObject* auxGO = new GameObject();
-
-    tileSet = new Sprite((*auxGO),file);
-
-    tileSet.Open(file);
-
+TileSet::TileSet(GameObject& associated, int tileWidth, int tileHeight, std::string file) : tileSet (associated,file), tileW(tileWidth), tileH(tileHeight) {
     if (tileSet.IsOpen()) {
-        columns = tileW/tileSet.GetWidth();
-        rows = tileH/tileSet.GetHeight();
+        columns = tileSet.GetWidth() / tileW;
+        rows = tileSet.GetHeight() / tileH;
+
     }
 }
 
@@ -19,7 +13,9 @@ void TileSet::RenderTile(unsigned index, float x, float y) {
     unsigned aux = columns * rows - 1;
 
     if (index <= aux) {
-        tileSet.SetClip((int) x, (int) y, tileSet.GetWidth(), tileSet.GetHeight());
+        int xClip = tileW * (index % columns);
+        int yClip = tileH * (index / columns);
+        tileSet.SetClip(xClip, yClip, tileW, tileH);
         tileSet.Render(x,y);
     }
 }

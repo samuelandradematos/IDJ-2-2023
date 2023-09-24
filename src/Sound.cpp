@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Sound.h"
+#include "Resources.h"
 
 
 Sound::Sound(GameObject& associated): Component(associated) {
@@ -25,10 +26,7 @@ void Sound::Stop() {
 }
 
 void Sound::Open(std::string file) {
-    chunk = Mix_LoadWAV(file.c_str());
-    if (chunk == nullptr) {
-        std::cout << SDL_GetError() << std::endl;
-    }
+    chunk = Resources::GetSound(file);
 }
 
 bool Sound::IsOpen() {
@@ -36,12 +34,6 @@ bool Sound::IsOpen() {
 }
 
 Sound::~Sound() {
-    if (chunk != nullptr) {
-        Sound::Stop();
-        Mix_FreeChunk(chunk);
-    } else {
-        Mix_FreeChunk(chunk);
-    }
 }
 
 void Sound::Update(float dt) {

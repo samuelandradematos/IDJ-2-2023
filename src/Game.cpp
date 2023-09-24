@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Game.h"
+#include "Resources.h"
 
 Game* Game::instance = nullptr;
 
@@ -64,7 +65,9 @@ void Game::Run() {
         SDL_Delay(33);
 
     }
-
+    Resources::ClearSounds();
+    Resources::ClearMusics();
+    Resources::ClearImages();
     delete instance;
 }
 
