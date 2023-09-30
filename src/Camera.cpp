@@ -38,8 +38,6 @@ void Camera::Update(float dt) {
 
         pos.x += speed.x * dt;
         pos.y += speed.y * dt;
-        std::cout << "X Camera: " << pos.x << std::endl;
-        std::cout << "Y Camera: " << pos.y << std::endl;
     } else {
 
     }
