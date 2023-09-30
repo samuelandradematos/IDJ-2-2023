@@ -18,6 +18,10 @@ class Game {
         SDL_Window* window;
         SDL_Renderer* renderer;
         State* state;
+        int frameStart;
+        float dt;
+        void CalculateDeltaTime();
+        float GetDeltaTime();
 
     public:
         ~Game();

@@ -4,6 +4,7 @@
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 #include "Component.h"
+#include "Camera.h"
 
 
 class Sprite: public Component {

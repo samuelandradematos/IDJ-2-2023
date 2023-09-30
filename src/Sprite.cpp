@@ -48,8 +48,8 @@ void Sprite::Render() {
 
 void Sprite::Render(int x, int y) {
     SDL_Rect dstRect;
-    dstRect.x = x;
-    dstRect.y = y;
+    dstRect.x = x - Camera::pos.x;
+    dstRect.y = y - Camera::pos.y;
     dstRect.w = clipRect.w;
     dstRect.h = clipRect.h;
     SDL_RenderCopy(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect);

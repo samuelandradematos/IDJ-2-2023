@@ -10,6 +10,9 @@
 #include "Sound.h"
 #include "Face.h"
 #include "TileMap.h"
+#include "InputManager.h"
+#include "Camera.h"
+#include "CameraFollower.h"
 
 class State {
     public:
@@ -24,7 +27,6 @@ class State {
         TileSet* tileSet;
         TileMap* tileMap;
         bool quitRequested;
-        void Input();
         void AddObject(int mouseX, int mouseY);
         std::vector<std::unique_ptr<GameObject>> objectArray;
 };

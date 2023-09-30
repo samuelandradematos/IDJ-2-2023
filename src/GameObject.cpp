@@ -44,7 +44,6 @@ void GameObject::RemoveComponent(Component* cpt) {
 }
 
 Component* GameObject::GetComponent(const std::string& type) {
-    std::cout << "GameObject::GetComponent com valor: " << type << std::endl;
     for (const auto & component : components) {
         if (component->Is(type)) {
             return component.get();

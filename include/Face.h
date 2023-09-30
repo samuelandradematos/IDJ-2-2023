@@ -2,6 +2,8 @@
 #define INCLUDE_FACE_H_
 #include "GameObject.h"
 #include <string>
+#include "InputManager.h"
+#include "Camera.h"
 
 class GameObject;
 class Face : public Component {

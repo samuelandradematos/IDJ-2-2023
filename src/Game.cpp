@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Resources.h"
 
+
 Game* Game::instance = nullptr;
 
 Game::Game(std::string title, int width , int height) {
@@ -36,6 +37,9 @@ Game::Game(std::string title, int width , int height) {
         if (renderer == nullptr) {
             std::cout << "SDL_CREATERENDERER: " << SDL_GetError() << std::endl;
         }
+
+        frameStart = 0;
+        dt = 0;
     }
 }
 
@@ -58,9 +62,12 @@ SDL_Renderer* Game::GetRenderer() {
 
 void Game::Run() {
     state = new State();
+    InputManager& im = InputManager::GetInstance();
     while (!state->QuitRequested()) {
+        CalculateDeltaTime();
+        im.Update();
+        state->Update(dt);
         state->Render();
-        state->Update(1.0);
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
 
@@ -78,4 +85,16 @@ Game& Game::GetInstance() {
         instance = new Game("Samuel_Andrade_de_Matos_170155943", 1024, 600);
         return *instance;
     }
+}
+
+void Game::CalculateDeltaTime() {
+    int frameNow = SDL_GetTicks();
+
+    dt = (frameNow - frameStart) / 1000.0;
+
+    frameStart = frameNow;
+}
+
+float Game::GetDeltaTime() {
+    return dt;
 }

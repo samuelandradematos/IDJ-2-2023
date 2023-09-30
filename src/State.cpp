@@ -1,6 +1,7 @@
 #include "State.h"
 #include <math.h>
 
+
 State::State(): music("Recursos/audio/stageState.ogg") {
     // Inicialização do criterio de parada
     quitRequested = false;
@@ -9,6 +10,9 @@ State::State(): music("Recursos/audio/stageState.ogg") {
     auto* bgGO = new GameObject();
     Component* bg = (Component*) new Sprite((*bgGO), "Recursos/img/ocean.jpg");
     bgGO->AddComponent(bg);
+    Component* cf = (Component*) new CameraFollower((*bgGO));
+    bgGO->AddComponent(cf);
+    bgGO->box = {0, 0, bgGO->box.w, bgGO->box.h};
     objectArray.emplace_back(bgGO);
     music.Play();
 
@@ -16,23 +20,43 @@ State::State(): music("Recursos/audio/stageState.ogg") {
     auto* tileGO = new GameObject();
     tileSet = new TileSet((*tileGO),64,64,"Recursos/img/tileset.png");
     tileMap = new TileMap((*tileGO),"Recursos/map/tileMap.txt",tileSet);
+    tileMap->SetParallax(-0.5);
     tileGO->AddComponent (tileMap);
-    tileGO->box = {0,0,tileGO->box.w,tileGO->box.h};
+    tileGO->box = {0, 0, tileGO->box.w, tileGO->box.h};
     objectArray.emplace_back(tileGO);
 }
 
 State::~State() {
     delete tileMap;
     delete tileSet;
+    objectArray.clear();
 }
 
 void State::LoadAssets() {
 }
 
 void State::Update(float dt) {
-    State::Input();
-    for (auto i = objectArray.end() - 1; i > objectArray.begin(); i--) {
+    // Carrega a instancia de input
+    InputManager& im = InputManager::GetInstance();
+
+    // Camera
+    Camera::Update(dt);
+
+    // Se ESC foi pressionando ou o evento QUIT ocorreu atualiza a flag de quit
+    if (im.QuitRequested() || im.KeyPress(ESCAPE_KEY)) {
+        quitRequested = true;
+    }
+
+
+    if (im.KeyPress(SPACE_KEY)) {
+        Vec2 objPos = Vec2(200, 0).GetRotated(-M_PI + M_PI*(rand() % 1001)/500.0) + Vec2((float) im.GetMouseX(), (float) im.GetMouseY());
+        AddObject((int)objPos.x + (int) Camera::pos.x, (int)objPos.y + (int) Camera::pos.y);
+    }
+
+    for (auto i = objectArray.end() - 1; i >= objectArray.begin(); i--) {
         (*i)->Update(dt);
+    }
+    for (auto i = objectArray.end() - 1; i >= objectArray.begin(); i--) {
         if ((*i)->IsDead()) {
             objectArray.erase(i);
         }
@@ -53,8 +77,7 @@ void State::AddObject(int mouseX, int mouseY) {
     auto* auxGO = new GameObject();
     auto* penguin = (Component*) new Sprite((*auxGO), "Recursos/img/penguinface.png");
     auxGO->AddComponent(penguin);
-    auxGO->box.x = (float)mouseX;
-    auxGO->box.y = (float)mouseY;
+    auxGO->box = {(float)mouseX, (float)mouseY, auxGO->box.w, auxGO->box.h};
     auto* sound = (Component*) new Sound((*auxGO), "Recursos/audio/boom.wav");
     auto* face = (Component*) new Face((*auxGO));
     auxGO->AddComponent(sound);
@@ -62,50 +85,3 @@ void State::AddObject(int mouseX, int mouseY) {
     objectArray.emplace_back(auxGO);
 }
 
-void State::Input() {
-    SDL_Event event;
-    int mouseX, mouseY;
-
-    // Obtenha as coordenadas do mouse
-    SDL_GetMouseState(&mouseX, &mouseY);
-
-    // SDL_PollEvent retorna 1 se encontrar eventos, zero caso contrário
-    while (SDL_PollEvent(&event)) {
-        // Se o evento for quit, setar a flag para terminação
-        if (event.type == SDL_QUIT) {
-            quitRequested = true;
-        }
-
-        // Se o evento for clique...
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
-            // Percorrer de trás pra frente pra sempre clicar no objeto mais de cima
-            for (int i = objectArray.size() - 1; i >= 0; --i) {
-                // Obtem o ponteiro e casta pra Face.
-                GameObject* go = (GameObject*) objectArray[i].get();
-                // Nota: Desencapsular o ponteiro é algo que devemos evitar ao máximo.
-                // O propósito do unique_ptr é manter apenas uma cópia daquele ponteiro,
-                // ao usar get(), violamos esse princípio e estamos menos seguros.
-                // Esse código, assim como a classe Face, é provisório. Futuramente, para
-                // chamar funções de GameObjects, use objectArray[i]->função() direto.
-                if (go->box.Contains((float)mouseX, (float)mouseY)) {
-                    Face* face = (Face*)go->GetComponent("Face");
-                    if ( nullptr != face ) {
-                        // Aplica dano
-                        face->Damage(std::rand() % 10 + 10);
-                        // Sai do loop (só queremos acertar um)
-                        break;
-                    }
-                }
-            }
-        }
-        if (event.type == SDL_KEYDOWN) {
-            // Se a tecla for ESC, setar a flag de quit
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
-                quitRequested = true;
-            } else {
-                Vec2 objPos = Vec2(200, 0).GetRotated(-M_PI + M_PI*(rand() % 1001)/500.0) + Vec2(mouseX, mouseY);  // NOLINT
-                AddObject((int)objPos.x, (int)objPos.y);
-            }
-        }
-    }
-}

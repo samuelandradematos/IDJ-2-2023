@@ -8,7 +8,7 @@ class TileMap : public Component {
     public:
         TileMap(GameObject& associated, const std::string& file, TileSet* tileSet);
         void Load(const std::string& file);
-        void SetTileSet(TileSet* tileSetNew);
+        void SetTileSet(TileSet* newTileSet);
         int& At(int x, int y, int z = 0);
         void Update(float dt);
         void Render();
@@ -17,12 +17,14 @@ class TileMap : public Component {
         int GetWidth();
         int GetHeight();
         int GetDepth();
+        void SetParallax(float parallax);
     private:
         std::vector<int> tileMatrix;
         TileSet* tileSet;
         int mapWidth;
         int mapHeight;
         int mapDepth;
+        float parallax;
 };
 
 #endif  // INCLUDE_TILEMAP_H_
