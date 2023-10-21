@@ -3,3 +3,5 @@
 Component::Component(GameObject& ass) : associated(ass) {}
 
 Component::~Component() {}
+
+void Component::Start() {}

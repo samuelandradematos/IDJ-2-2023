@@ -8,6 +8,7 @@ TileMap::TileMap(GameObject& associated, const std::string& file, TileSet* tileS
     Load(file);
     SetTileSet(tileSet);
     parallax = 0;
+    started = false;
 }
 
 void TileMap::Load(const std::string& file) {
@@ -104,3 +105,5 @@ bool TileMap::Is(std::string type) {
 void TileMap::SetParallax(float plx) {
     parallax = plx;
 }
+
+void TileMap::Start() {}

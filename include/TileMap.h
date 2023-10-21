@@ -13,6 +13,7 @@ class TileMap : public Component {
         void Update(float dt);
         void Render();
         bool Is(std::string type);
+        void Start();
         void RenderLayer(int layer, int cameraX = 0, int cameraY = 0);
         int GetWidth();
         int GetHeight();
@@ -25,6 +26,7 @@ class TileMap : public Component {
         int mapHeight;
         int mapDepth;
         float parallax;
+        bool started;
 };
 
 #endif  // INCLUDE_TILEMAP_H_

@@ -3,17 +3,15 @@
 #include <SDL.h>
 #include "GameObject.h"
 
-GameObject::GameObject() {
-    this->isDead = false;
-}
+GameObject::GameObject() : angleDeg(0), started(false), isDead(false) {}
 
 GameObject::~GameObject() {
     components.clear();
 }
 
 void GameObject::Update(float dt) {
-    for (auto i = components.begin(); i < components.end(); i++) {
-        (*i)->Update(dt);
+    for (const auto & component : components) {
+        component->Update(dt);
     }
 }
 
@@ -21,6 +19,13 @@ void GameObject::Render() {
     for (const auto & component : components) {
         component->Render();
     }
+}
+
+void GameObject::Start() {
+    for (const auto & it : components){
+        it->Start();
+    }
+    started = true;
 }
 
 bool GameObject::IsDead() {
@@ -32,12 +37,14 @@ void GameObject::RequestDelete() {
 }
 
 void GameObject::AddComponent(Component* cpt) {
+    if (started)
+        cpt->Start();
     components.emplace_back(cpt);
 }
 
 void GameObject::RemoveComponent(Component* cpt) {
     for (auto i = components.begin(); i < components.end(); i++) {
-        if (cpt == (Component *) (*i).get()) {
+        if (cpt == (Component*) (*i).get()) {
             components.erase(i);
         }
     }

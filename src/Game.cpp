@@ -63,14 +63,13 @@ SDL_Renderer* Game::GetRenderer() {
 void Game::Run() {
     state = new State();
     InputManager& im = InputManager::GetInstance();
+    state->Start();
     while (!state->QuitRequested()) {
         CalculateDeltaTime();
         im.Update();
         state->Update(dt);
         state->Render();
         SDL_RenderPresent(renderer);
-        SDL_Delay(33);
-
     }
     Resources::ClearSounds();
     Resources::ClearMusics();

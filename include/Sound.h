@@ -19,9 +19,11 @@ class Sound : public Component {
         void Update(float dt);
         void Render();
         bool Is(std::string type);
+        void Start();
     private:
         Mix_Chunk* chunk;
         int channel;
+        bool started;
 };
 
 

@@ -13,6 +13,7 @@
 #include "InputManager.h"
 #include "Camera.h"
 #include "CameraFollower.h"
+#include "Alien.h"
 
 class State {
     public:
@@ -22,13 +23,17 @@ class State {
         void LoadAssets();
         void Update(float dt);
         void Render();
+        void Start();
+        std::weak_ptr<GameObject> AddObject(GameObject* go);
+        std::weak_ptr<GameObject> GetObjectPtr(GameObject* go);
     private:
+        bool started;
         Music music;
         TileSet* tileSet;
         TileMap* tileMap;
         bool quitRequested;
         void AddObject(int mouseX, int mouseY);
-        std::vector<std::unique_ptr<GameObject>> objectArray;
+        std::vector<std::shared_ptr<GameObject>> objectArray;
 };
 
 #endif  // INCLUDE_STATE_H_

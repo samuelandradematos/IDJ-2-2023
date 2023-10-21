@@ -13,6 +13,7 @@ class Face : public Component {
         void Update(float dt);
         void Render();
         bool Is(std::string type);
+        void Start();
     private:
         int hitpoints;
 };

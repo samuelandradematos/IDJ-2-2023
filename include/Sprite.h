@@ -21,10 +21,16 @@ class Sprite: public Component {
         void Render();
         void Render(int x,int y);
         bool Is(std::string type);
+        void Start();
+        void SetScale(float scaleX, float scaleY);
+        Vec2 GetScale();
     private:
+        Vec2 scale;
+        float angle;
         SDL_Texture* texture;
         int width;
         int height;
         SDL_Rect clipRect;
+        bool started;
 };
 #endif  // INCLUDE_SPRITE_H_

@@ -5,10 +5,12 @@
 
 Sound::Sound(GameObject& associated): Component(associated) {
     chunk = nullptr;
+    started = false;
 }
 
 Sound::Sound(GameObject& associated, const std::string& file) : Component(associated) {
     Open(file);
+    started = false;
 }
 
 void Sound::Play(int times) {
@@ -33,17 +35,14 @@ bool Sound::IsOpen() {
     return chunk != nullptr;
 }
 
-Sound::~Sound() {
-}
+Sound::~Sound() {}
 
-void Sound::Update(float dt) {
-}
+void Sound::Update(float dt) {}
 
-void Sound::Render() {
-}
+void Sound::Render() {}
 
 bool Sound::Is(std::string type) {
     return type == "Sound";
 }
 
-
+void Sound::Start() {}

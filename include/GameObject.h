@@ -16,8 +16,11 @@ class GameObject {
         void RequestDelete();
         void AddComponent(Component* cpt);
         void RemoveComponent(Component* cpt);
+        void Start();
         Component* GetComponent(const std::string& type);
         Rect box;
+        double angleDeg;
+        bool started;
     private:
         std::vector<std::unique_ptr<Component>> components;
         bool isDead;

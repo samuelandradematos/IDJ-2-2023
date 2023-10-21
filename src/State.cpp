@@ -1,16 +1,20 @@
 #include "State.h"
 #include <math.h>
+#include <algorithm>
 
 
 State::State(): music("Recursos/audio/stageState.ogg") {
-    // Inicialização do criterio de parada
+    // Inicialização do critério de parada
     quitRequested = false;
 
-    // Inicialização do background e da musica
+    // Inicialização da flag de started
+    started = false;
+
+    // Inicialização do background e da música
     auto* bgGO = new GameObject();
-    Component* bg = (Component*) new Sprite((*bgGO), "Recursos/img/ocean.jpg");
+    Sprite* bg = new Sprite((*bgGO), "Recursos/img/ocean.jpg");
     bgGO->AddComponent(bg);
-    Component* cf = (Component*) new CameraFollower((*bgGO));
+    CameraFollower* cf = new CameraFollower((*bgGO));
     bgGO->AddComponent(cf);
     bgGO->box = {0, 0, bgGO->box.w, bgGO->box.h};
     objectArray.emplace_back(bgGO);
@@ -24,6 +28,13 @@ State::State(): music("Recursos/audio/stageState.ogg") {
     tileGO->AddComponent (tileMap);
     tileGO->box = {0, 0, tileGO->box.w, tileGO->box.h};
     objectArray.emplace_back(tileGO);
+
+    // Criação do Alien
+    auto* alienGO = new GameObject();
+    Alien* alien = new Alien((*alienGO),3);
+    alienGO->AddComponent(alien);
+    alienGO->box.SetCenter({512,300});
+    objectArray.emplace_back(alienGO);
 }
 
 State::~State() {
@@ -47,18 +58,10 @@ void State::Update(float dt) {
         quitRequested = true;
     }
 
-
-    if (im.KeyPress(SPACE_KEY)) {
-        Vec2 objPos = Vec2(200, 0).GetRotated(-M_PI + M_PI*(rand() % 1001)/500.0) + Vec2((float) im.GetMouseX(), (float) im.GetMouseY());
-        AddObject((int)objPos.x + (int) Camera::pos.x, (int)objPos.y + (int) Camera::pos.y);
-    }
-
-    for (auto i = objectArray.end() - 1; i >= objectArray.begin(); i--) {
-        (*i)->Update(dt);
-    }
-    for (auto i = objectArray.end() - 1; i >= objectArray.begin(); i--) {
-        if ((*i)->IsDead()) {
-            objectArray.erase(i);
+    for (int i = objectArray.size() - 1; i >= 0; i--) {
+        objectArray.at(i)->Update(dt);
+        if (objectArray.at(i)->IsDead()) {
+            objectArray.erase(objectArray.begin() + i);
         }
     }
 }
@@ -73,15 +76,31 @@ bool State::QuitRequested() {
     return quitRequested;
 }
 
-void State::AddObject(int mouseX, int mouseY) {
-    auto* auxGO = new GameObject();
-    auto* penguin = (Component*) new Sprite((*auxGO), "Recursos/img/penguinface.png");
-    auxGO->AddComponent(penguin);
-    auxGO->box = {(float)mouseX, (float)mouseY, auxGO->box.w, auxGO->box.h};
-    auto* sound = (Component*) new Sound((*auxGO), "Recursos/audio/boom.wav");
-    auto* face = (Component*) new Face((*auxGO));
-    auxGO->AddComponent(sound);
-    auxGO->AddComponent(face);
-    objectArray.emplace_back(auxGO);
+void State::Start() {
+    LoadAssets();
+    for (auto it : objectArray) {
+        if (!it->started)
+            it->Start();
+    }
+    started = true;
 }
 
+//
+std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
+    std::shared_ptr<GameObject> sharedPtrGO(go);
+    objectArray.push_back(sharedPtrGO);
+    if (started) {
+        sharedPtrGO->Start();
+    }
+    std::weak_ptr<GameObject> weakPtrGO(sharedPtrGO);
+    return weakPtrGO;
+}
+
+//
+std::weak_ptr<GameObject> State::GetObjectPtr(GameObject *go) {
+    for (auto it : objectArray) {
+        if (it.get() == go)
+            return std::weak_ptr<GameObject>(it);
+    }
+    return {};
+}
