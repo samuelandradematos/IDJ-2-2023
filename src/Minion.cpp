@@ -11,12 +11,10 @@ Minion::Minion(GameObject &associated, std::weak_ptr<GameObject> alienCenter, fl
     std::mt19937 rng(seed);
     std::uniform_real_distribution<float> gen(1.0,1.5);
     float minionScale = gen(rng);
-    std::cout << "minionScale: " << minionScale << std::endl;
     minionSprite->SetScale(minionScale,minionScale);
     associated.AddComponent(minionSprite);
 
     Vec2 posInit = {0, 0};
-    std::cout << "arc: " << arc << std::endl;
     if (auto refCenter = alienCtr.lock()) {
         posInit.DefPosByDistanceToObjCentered(refCenter->box.GetCenter(), DIST_INICIAL, (arc * M_PI / 180), associated.box.w, associated.box.h);
 

@@ -34,7 +34,6 @@ float Vec2::DistToOrigin() {
 }
 
 void Vec2::RotatedDegree(float angulo) {
-    std::cout << "Angulo em graus: " << angulo << " | Angulo em rad: " << (angulo * M_PI) / 180 << std::endl;
     x = GetRotated((angulo * M_PI) / 180).x;
     y = GetRotated((angulo * M_PI) / 180).y;
 }

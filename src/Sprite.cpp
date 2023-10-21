@@ -10,7 +10,6 @@ Sprite::Sprite(GameObject& associated, const std::string& file) : Component(asso
     Open(file);
     associated.box.h = (float)height;
     associated.box.w = (float)width;
-    std::cout << "Inializou o arquivo: |" << file << "|"<< std::endl;
 }
 
 Sprite::~Sprite() {
@@ -66,17 +65,13 @@ int Sprite::GetWidth() {
 
 void Sprite::SetScale(float scaleX, float scaleY) {
     if (scaleX != 0) {
-        std::cout << "Box.w: " << associated.box.w << std::endl;
         scale.x = scaleX;
         associated.box.w = associated.box.w * scale.x;
-        std::cout << "Depois da scala Box.w: " << associated.box.w << std::endl;
     }
 
     if (scaleY != 0) {
-        std::cout << "Box.h: " << associated.box.h << std::endl;
         scale.y = scaleY;
         associated.box.h = associated.box.h * scale.y;
-        std::cout << "Box.h: " << associated.box.h << std::endl;
     }
 }
 
