@@ -5,12 +5,13 @@
 #include "SDL_include.h"
 #include "Component.h"
 #include "Camera.h"
+#define ZERO 0
 
 
 class Sprite: public Component {
     public:
         Sprite(GameObject& associated);
-        Sprite(GameObject& associated, const std::string& file);
+        Sprite(GameObject& associated, const std::string& file, int frameCount = 1, float frameTime = 1);
         ~Sprite();
         void Open(const std::string& file);
         void SetClip(int x, int y, int w, int h);
@@ -24,7 +25,12 @@ class Sprite: public Component {
         void Start();
         void SetScale(float scaleX, float scaleY);
         Vec2 GetScale();
+        void SetFrame(int newFrame);
+        void SetFrameCount(int newFrameCount);
+        void SetFrameTime(float newFrameTime);
     private:
+        int frameCount, currentFrame;
+        float timeElapsed, frameTime;
         Vec2 scale;
         float angle;
         SDL_Texture* texture;

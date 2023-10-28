@@ -19,6 +19,10 @@ Vec2 Vec2::operator-(const Vec2 &vetor2) {
     return Vec2(x - vetor2.x, y - vetor2.y);
 }
 
+Vec2 Vec2::operator*(const float rhs) {
+    return Vec2(x * rhs, y * rhs);
+ }
+
 Vec2::~Vec2() {}
 
 Vec2 Vec2::GetRotated(float angulo) {
@@ -27,6 +31,18 @@ Vec2 Vec2::GetRotated(float angulo) {
 
 Vec2 Vec2::DistEntreDoisPontos(Vec2 vetor1, Vec2 vetor2) {
     return Vec2(vetor2.x - vetor1.x,vetor2.y - vetor1.y);
+}
+
+float Vec2::Magnitude() {
+    return std::sqrt(x * x + y * y);
+}
+
+Vec2 Vec2::NormalizeVec() {
+    return Vec2(x * (1.f / this->Magnitude()), y * (1.f / this->Magnitude()));
+}
+
+float Vec2::DotProduct(Vec2 vetor2) {
+    return x * vetor2.x + y * vetor2.y;
 }
 
 float Vec2::DistToOrigin() {
@@ -48,17 +64,20 @@ void Vec2::Rotate(float angle) {
     y = y * cos(angle) - x * sin (angle);
 }
 
+Vec2 Vec2::RotateVec(float angle) {
+    return Vec2(x * cos(angle) - y * sin(angle), y * cos(angle) - x * sin (angle));
+}
+
+float Vec2::GetAngleDeg() {
+    return atan2(y, x) * 180 / M_PI;
+}
+
 float Vec2::GetRotateDegree() {
     return atan2(y, x) * (180 / M_PI);
 }
 
 void Vec2::RotateDegree(float angle) {
     Rotate((angle *  M_PI) / 180);
-}
-
-void Vec2::Sub(Vec2 vec) {
-    x -= vec.x;
-    y -= vec.y;
 }
 
 Vec2 Vec2::VecDefPosByDistanceToObjCentered(Vec2 object, float distance, float angleRad, float w, float h) {

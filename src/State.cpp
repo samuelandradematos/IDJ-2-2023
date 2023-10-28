@@ -35,6 +35,14 @@ State::State(): music("Recursos/audio/stageState.ogg") {
     alienGO->AddComponent(alien);
     alienGO->box.SetCenter({512,300});
     objectArray.emplace_back(alienGO);
+
+    // Creation of Penguin
+    auto* penguinBodyGO = new GameObject();
+    PenguinBody* penguinBody = new PenguinBody(*penguinBodyGO);
+    penguinBodyGO->AddComponent(penguinBody);
+    penguinBodyGO->box.SetCenter({704, 640});
+    Camera::Follow(penguinBodyGO);
+    objectArray.emplace_back(penguinBodyGO);
 }
 
 State::~State() {

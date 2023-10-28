@@ -11,7 +11,7 @@ class Bullet : public Component {
         float distanceLeft;
         int damage;
     public:
-        Bullet(GameObject& associated, float angle, float newSpeed, int newDamage, float maxDistance, std::string sprite);
+        Bullet(GameObject& associated, float angle, float newSpeed, int newDamage, float maxDistance, std::string sprite, int frameCount, float frameTime);
         void Update(float dt);
         void Render();
         void Start();

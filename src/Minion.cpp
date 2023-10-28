@@ -48,9 +48,10 @@ void Minion::Update(float dt) {
 void Minion::Shoot(Vec2 target) {
     Vec2 path = target - associated.box.GetCenter();
     float angle = atan2(path.y, path.x);
+    int damage = std::rand() % 10 + 10;
 
     GameObject* bulletGO = new GameObject();
-    Bullet* bullet = new Bullet((*bulletGO), angle, MINION_BULLETSPEED, MINION_BULLETDMG, path.DistToOrigin(), "Recursos/img/minionbullet1.png");
+    Bullet* bullet = new Bullet((*bulletGO), angle, CANNON_BULLET_SPEED, damage, path.DistToOrigin(), "Recursos/img/minionbullet2.png", 3, 0.15);
     bulletGO->AddComponent(bullet);
 
     bulletGO->box.SetCenter(associated.box.GetCenter());

@@ -1,13 +1,13 @@
 #include "Bullet.h"
 
-Bullet::Bullet(GameObject &associated, float angle, float newSpeed, int newDamage, float maxDistance, std::string sprite)
+Bullet::Bullet(GameObject &associated, float angle, float newSpeed, int newDamage, float maxDistance, std::string sprite, int frameCount, float frameTime)
 : Component(associated), distanceLeft(maxDistance), damage(newDamage)  {
-     Sprite* bulletSprite = new Sprite(associated, sprite);
+     Sprite* bulletSprite = new Sprite(associated, sprite, frameCount, frameTime);
      associated.AddComponent(bulletSprite);
 
      speed = {(float)cos(angle) * newSpeed, (float)sin(angle) * newSpeed};
      associated.angleDeg = speed.GetRotateDegree();
-
+     associated.box.w = bulletSprite->GetWidth();
 }
 
 void Bullet::Update(float dt) {
