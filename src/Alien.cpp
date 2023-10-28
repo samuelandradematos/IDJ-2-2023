@@ -51,9 +51,7 @@ void Alien::Update(float dt) {
                 float alienMov = dt * ALIEN_SPEED;
                 bool xMovFinished = false;
                 bool yMovFinished = false;
-                Vec2 centered = Vec2(associated.box.x + (associated.box.w / 2),
-                                     associated.box.y + (associated.box.h / 2));
-                Vec2 dist = Vec2::DistEntreDoisPontos(centered, taskQueue.front().pos);
+                Vec2 dist = Vec2::DistEntreDoisPontos(associated.box.GetCenter(), taskQueue.front().pos);
 
                 if (fabsf(dist.x) > alienMov) {
                     associated.box.x += alienMov * cos(atan2(dist.y, dist.x));

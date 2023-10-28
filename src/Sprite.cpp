@@ -6,14 +6,22 @@
 
 Sprite::Sprite(GameObject& associated): Component(associated), scale({1,1}), texture(nullptr), started(false) {}
 
-Sprite::Sprite(GameObject& associated, const std::string& file) : Component(associated), scale({1,1}), texture(nullptr), started(false) {
+Sprite::Sprite(GameObject& associated, const std::string& file, int frameCount, float frameTime)
+: Component(associated),
+    frameCount(frameCount),
+    currentFrame(0),
+    timeElapsed(0.0),
+    frameTime(frameTime),
+    scale({1,1}),
+    texture(nullptr),
+    started(false)
+{
     Open(file);
     associated.box.h = (float)height;
     associated.box.w = (float)width;
 }
 
-Sprite::~Sprite() {
-}
+Sprite::~Sprite() {}
 
 void Sprite::Open(const std::string& file) {
     Game& game = Game::GetInstance();
@@ -60,7 +68,7 @@ int Sprite::GetHeight() {
 }
 
 int Sprite::GetWidth() {
-    return width * scale.y;
+    return (width * scale.y) / frameCount;
 }
 
 void Sprite::SetScale(float scaleX, float scaleY) {
@@ -83,10 +91,33 @@ bool Sprite::IsOpen() {
     return texture != nullptr;
 }
 
-void Sprite::Update(float dt) {}
+void Sprite::Update(float dt) {
+    timeElapsed += dt;
+    if (timeElapsed >= frameTime) {
+        currentFrame = (currentFrame + 1) % frameCount;
+
+        SetFrame(currentFrame);
+        timeElapsed = 0;
+    }
+}
 
 bool Sprite::Is(std::string type) {
     return type == "Sprite";
 }
 
 void Sprite::Start() {}
+
+void Sprite::SetFrame(int newFrame) {
+    currentFrame = newFrame;
+    SetClip(currentFrame * (GetWidth() / scale.x),ZERO, GetWidth() / scale.x, GetHeight() / scale.y);
+}
+
+void Sprite::SetFrameCount(int newFrameCount) {
+    frameCount = newFrameCount;
+}
+
+void Sprite::SetFrameTime(float newFrameTime) {
+    frameTime = newFrameTime;
+}
+
+

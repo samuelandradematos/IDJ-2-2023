@@ -13,6 +13,7 @@ class Vec2 {
         ~Vec2();
         Vec2 operator+(Vec2 const& vetor2);
         Vec2 operator-(Vec2 const& vetor2);
+        Vec2 operator*(const float rhs);
         Vec2 somaOuSubtraiVetores(Vec2 vetor1, Vec2 vetor2, int tipo);
         Vec2 multPorEscalar(Vec2 vetor, float escalar);
         float DistToOrigin();
@@ -20,6 +21,11 @@ class Vec2 {
         static Vec2 DistEntreDoisPontos(Vec2 vetor1, Vec2 vetor2);
         float incX(Vec2 vetor);
         float RotateDegree();
+        float Magnitude();
+        float DotProduct(Vec2 vetor2);
+        Vec2 RotateVec(float angle);
+        Vec2 NormalizeVec();
+        float GetAngleDeg();
         float incEntreDoisPontos(Vec2 vetor1, Vec2 vetor2);
         Vec2 GetRotated(float angulo);
         void RotatedDegree(float angulo);
