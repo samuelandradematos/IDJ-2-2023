@@ -76,8 +76,8 @@ void State::Update(float dt) {
         }
     }
 
-    for (int i = auxArray.size() - 1; i >= 0; i--) {
-        for (int j = i - 1; j >= 0; j--) {
+    for (auto i = 0; i < auxArray.size(); i++) {
+        for (int j = i + 1; j < auxArray.size(); j++) {
             Collider *iCollider = (Collider *) (auxArray.at(i)->GetComponent("Collider"));
             Collider *jCollider = (Collider *) (auxArray.at(j)->GetComponent("Collider"));
             if (

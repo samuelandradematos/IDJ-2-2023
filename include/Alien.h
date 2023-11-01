@@ -21,6 +21,8 @@
 #define ALIEN_REST_TIME 3
 #define ALIEN_DEATH_FRAME_COUNT 4
 #define ALIEN_DEATH_FRAME_TIME 6
+#define MIN_SHOOT_DISTANCE 10
+#define DIST_MINIONS 160
 
 class Alien : public Component {
     public:
@@ -48,6 +50,7 @@ class Alien : public Component {
         int hp, nMinions;
         Timer restTimer;
         Vec2 destination;
+        bool xMovFisinhed, yMovFinished;
         std::vector<std::weak_ptr<GameObject>> minionArray;
 
 };

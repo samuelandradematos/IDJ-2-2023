@@ -7,7 +7,9 @@ Alien::Alien(GameObject &assoGo, int nMns)
 : Component(assoGo),
     state{AlienState::RESTING},
     hp(ALIEN_HP),
-    nMinions(nMns)
+    nMinions(nMns),
+    xMovFisinhed(false),
+    yMovFinished(false)
 {
     Sprite* alienSprite = new Sprite(associated,"Recursos/img/alien.png");
     associated.AddComponent(alienSprite);
@@ -52,10 +54,15 @@ void Alien::Update(float dt) {
             if (restTimer.Get() >= ALIEN_REST_TIME) {
                 restTimer.Restart();
                 state = AlienState::MOVING;
-                destination = PenguinBody::player->GetPlayerCenteredPos();
+
+                Vec2 playerCenter = PenguinBody::player->GetPlayerCenteredPos();
+                float distance = Vec2(associated.box.w / 2, associated.box.h / 2).Magnitude() + DIST_MINIONS;
+                float movAngle = (associated.box.GetCenter() - playerCenter).GetAngleDeg();
+
+                destination.DefPosByDistanceToObjCentered(playerCenter,distance, movAngle * DEGREE_TO_RAD,associated.box.w, associated.box.h);
             }
         } else {
-            if (associated.box.x >= destination.x && associated.box.y >= destination.y) {
+            if (xMovFisinhed && yMovFinished) {
                 auto closestMinion = std::min_element(minionArray.begin(), minionArray.end(),
                                                       [&](const std::weak_ptr<GameObject> &minionA,
                                                           const std::weak_ptr<GameObject> &minionB) {
@@ -72,12 +79,13 @@ void Alien::Update(float dt) {
                                                       });
 
                 if (closestMinion != minionArray.end() && !closestMinion->expired()) {
-                    destination = PenguinBody::player->GetPlayerCenteredPos();
                     auto minion = closestMinion->lock();
                     Minion *minionPtr = (Minion *) minion->GetComponent("Minion");
-                    minionPtr->Shoot(destination);
+                    minionPtr->Shoot(PenguinBody::player->GetPlayerCenteredPos());
                     restTimer.Restart();
                     state = AlienState::RESTING;
+                    xMovFisinhed = false;
+                    yMovFinished = false;
                 } else {
                     std::cout << "Minion nao existe!" << std::endl;
                 }
@@ -89,86 +97,20 @@ void Alien::Update(float dt) {
                     associated.box.x += alienMov * cos(atan2(dist.y, dist.x));
                 } else {
                     associated.box.x = destination.x - (associated.box.w / 2);
+                    xMovFisinhed = true;
                 }
 
                 if (fabsf(dist.y) > alienMov) {
                     associated.box.y += alienMov * sin(atan2(dist.y, dist.x));
                 } else {
                     associated.box.y = destination.y - (associated.box.h / 2);
+                    yMovFinished = true;
                 }
             }
         }
     }
-//
-//    if (im.MousePress(SDL_BUTTON_LEFT)) {
-//        taskQueue.emplace(Action(Action::ActionType{Action::SHOOT},im.GetMouseX() + Camera::pos.x, im.GetMouseY() + Camera::pos.y));
-//    }
-//
-//    if (im.MousePress(SDL_BUTTON_RIGHT)) {
-//        taskQueue.emplace(Action(Action::ActionType{Action::MOVE},im.GetMouseX() + Camera::pos.x, im.GetMouseY() + Camera::pos.y));
-//    }
-//
-//    if(!taskQueue.empty()) {
-//        Action aux(Action::ActionType{Action::MOVE}, 0, 0);
-//        switch (taskQueue.front().type) {
-//            case Action::MOVE: {
-//                float alienMov = dt * ALIEN_SPEED;
-//                bool xMovFinished = false;
-//                bool yMovFinished = false;
-//                Vec2 dist = Vec2::DistEntreDoisPontos(associated.box.GetCenter(), taskQueue.front().pos);
-//
-//                if (fabsf(dist.x) > alienMov) {
-//                    associated.box.x += alienMov * cos(atan2(dist.y, dist.x));
-//                } else {
-//                    associated.box.x = taskQueue.front().pos.x - (associated.box.w / 2);
-//                    xMovFinished = true;
-//                }
-//
-//                if (fabsf(dist.y) > alienMov) {
-//                    associated.box.y += alienMov * sin(atan2(dist.y, dist.x));
-//                } else {
-//                    associated.box.y = taskQueue.front().pos.y - (associated.box.h / 2);
-//                    yMovFinished = true;
-//                }
-//
-//                if (xMovFinished && yMovFinished) {
-//                    taskQueue.pop();
-//                }
-//            }
-//                break;
-//            case Action::SHOOT: {
-//                Vec2 target = taskQueue.front().pos;
-//                auto closestMinion = std::min_element(minionArray.begin(), minionArray.end(),
-//                                                      [&](const std::weak_ptr<GameObject> &minionA,
-//                                                          const std::weak_ptr<GameObject> &minionB) {
-//                                                          if (minionA.expired() || minionB.expired())
-//                                                              return false;
-//
-//                                                          Vec2 centerA = minionA.lock()->box.GetCenter();
-//                                                          Vec2 centerB = minionB.lock()->box.GetCenter();
-//
-//                                                          return Vec2::DistEntreDoisPontos(centerA,
-//                                                                                           target).DistToOrigin() <
-//                                                                 Vec2::DistEntreDoisPontos(centerB,
-//                                                                                            target).DistToOrigin();
-//                                                      });
-//
-//                if (closestMinion != minionArray.end() && !closestMinion->expired()) {
-//                    auto minion = closestMinion->lock();
-//                    Minion* minionPtr = (Minion*) minion->GetComponent("Minion");
-//                    minionPtr->Shoot(target);
-//                } else {
-//                    std::cout << "Minion nao existe!" << std::endl;
-//                }
-//            }
-//                taskQueue.pop();
-//                break;
-//
-//        }
-//    }
 
     if (IsDead()) {
-        std::cout << "Alien morreu" << std::endl;
         float alienDeathTimeLimit = dt * ALIEN_DEATH_FRAME_TIME * ALIEN_DEATH_FRAME_COUNT;
 
         GameObject* alienDeathGO = new GameObject();

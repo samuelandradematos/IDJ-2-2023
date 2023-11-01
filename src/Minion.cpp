@@ -62,6 +62,8 @@ void Minion::Shoot(Vec2 target) {
     float angle = atan2(path.y, path.x);
     int damage = std::rand() % 10 + 10;
 
+    std::cout << "Minion Atirou" << std::endl;
+
     GameObject* bulletGO = new GameObject();
     Bullet* bullet = new Bullet(
                             (*bulletGO),
