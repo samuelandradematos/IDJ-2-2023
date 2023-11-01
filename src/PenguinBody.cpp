@@ -113,10 +113,8 @@ void PenguinBody::Update(float dt) {
 void PenguinBody::NotifyCollision(GameObject &other) {
     if (other.GetComponent("Bullet") != nullptr) {
         if (((Bullet *) (other.GetComponent("Bullet")))->targetsPlayer) {
-            if (Vec2::DistEntreDoisPontos(associated.box.GetCenter(),other.box.GetCenter()).Magnitude()
-                <= (associated.box.w / 2) ) {
-                TakeDamage(((Bullet *) (other.GetComponent("Bullet")))->GetDamage());
-            }
+            int damage = ((Bullet *) (other.GetComponent("Bullet")))->GetDamage();
+            TakeDamage(damage);
         }
     }
 }
@@ -159,7 +157,7 @@ Vec2 PenguinBody::GetPlayerCenteredPos() {
 
 void PenguinBody::TakeDamage(int damage) {
     hp -= damage;
-    std::cout << "Took " << damage << " damage. HP left " << hp << std::endl;
+    std::cout << "Player Took " << damage << " damage. HP left " << hp << std::endl;
 }
 
 bool PenguinBody::IsDead() {

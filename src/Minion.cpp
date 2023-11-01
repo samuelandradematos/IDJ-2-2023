@@ -87,10 +87,10 @@ void Minion::Shoot(Vec2 target) {
 
 void Minion::NotifyCollision(GameObject &other) {
     if (other.GetComponent("Bullet") != nullptr) {
-        if (((Bullet *) (other.GetComponent("Bullet")))->targetsEnemy) {
-            std::cout << "Acertou minion" << std::endl;
+        Bullet* bulletPtr = (Bullet*)other.GetComponent("Bullet");
+        if (bulletPtr->targetsPlayer) {
             Alien* alienPtr = (Alien*)(alienCtr.lock()->GetComponent("Alien"));
-            int damage = ((Bullet *) (other.GetComponent("Bullet")))->GetDamage();
+            int damage = bulletPtr->GetDamage();
             alienPtr->TakeDamage(damage);
         }
     }

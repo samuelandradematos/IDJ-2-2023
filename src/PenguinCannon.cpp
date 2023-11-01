@@ -32,12 +32,11 @@ void PenguinCannon::Update(float dt) {
 
 void PenguinCannon::NotifyCollision(GameObject &other) {
     if (other.GetComponent("Bullet") != nullptr) {
-        if (((Bullet *) (other.GetComponent("Bullet")))->targetsPlayer) {
-            if (Vec2::DistEntreDoisPontos(associated.box.GetCenter(),other.box.GetCenter()).Magnitude() <= (associated.box.w / 2)) {
-                PenguinBody* penguinBodyPtr = (PenguinBody*)(pBody.lock()->GetComponent("PenguinBody"));
-                int damage = ((Bullet *) (other.GetComponent("Bullet")))->GetDamage();
-                penguinBodyPtr->TakeDamage(damage);
-            }
+        Bullet* bullet = ((Bullet *) (other.GetComponent("Bullet")));
+        if (bullet->targetsPlayer) {
+            PenguinBody* penguinBodyPtr = (PenguinBody*)(pBody.lock()->GetComponent("PenguinBody"));
+            int damage = ((Bullet *) (other.GetComponent("Bullet")))->GetDamage();
+            penguinBodyPtr->TakeDamage(damage);
         }
     }
 }
@@ -86,7 +85,7 @@ void PenguinCannon::Shoot() {
                 associated.box.GetCenter().DistToOrigin(),
                 "Recursos/img/penguinbullet.png",
                 CANNON_BULLET_COUNT,
-                1,
+                0.25,
                 0,
                 false,
                 true

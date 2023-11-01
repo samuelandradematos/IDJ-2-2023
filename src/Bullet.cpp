@@ -14,13 +14,13 @@ Bullet::Bullet(
                 int frameCount,
                 float frameTime,
                 float secondsToSelfDestruct,
-                bool isPlayer,
-                bool isEnemy
+                bool targetIsPlayer,
+                bool targetIsEnemy
                 ) : Component(assGO),
                     distanceLeft(maxDistance),
                     damage(newDamage),
-                    targetsPlayer(isPlayer),
-                    targetsEnemy(isEnemy)
+                    targetsPlayer(targetIsPlayer),
+                    targetsEnemy(targetIsEnemy)
 {
     Sprite* bulletSprite = new Sprite(associated, sprite, frameCount, frameTime, secondsToSelfDestruct);
     associated.AddComponent(bulletSprite);

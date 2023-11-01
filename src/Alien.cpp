@@ -180,7 +180,7 @@ bool Alien::Is(std::string type) {
 
 void Alien::TakeDamage(int damage) {
     hp -= damage;
-    std::cout << "Took " << damage << " damage. HP left " << hp << std::endl;
+    std::cout << "Alien Took " << damage << " damage. HP left " << hp << std::endl;
 }
 
 bool Alien::IsDead() {

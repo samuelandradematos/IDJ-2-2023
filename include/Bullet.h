@@ -23,8 +23,8 @@ class Bullet : public Component {
                 int frameCount,
                 float frameTime,
                 float secondsToSelfDestruct = 0,
-                bool isPlayer = false,
-                bool isEnemy = false
+                bool targetIsPlayer = false,
+                bool targetIsEnemy = false
                 );
         void Update(float dt);
         void Render();
