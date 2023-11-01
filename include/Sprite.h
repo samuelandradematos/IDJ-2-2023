@@ -4,14 +4,15 @@
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 #include "Component.h"
-#include "Camera.h"
+#include "Vec2.h"
+#include "Timer.h"
 #define ZERO 0
 
 
 class Sprite: public Component {
     public:
         Sprite(GameObject& associated);
-        Sprite(GameObject& associated, const std::string& file, int frameCount = 1, float frameTime = 1);
+        Sprite(GameObject& associated, const std::string& file, int frameCount = 1, float frameTime = 1, float secondsToSelfDestruct = 0);
         ~Sprite();
         void Open(const std::string& file);
         void SetClip(int x, int y, int w, int h);
@@ -29,6 +30,8 @@ class Sprite: public Component {
         void SetFrameCount(int newFrameCount);
         void SetFrameTime(float newFrameTime);
     private:
+        float secondsToSelfDestruct;
+        Timer selfDestructCount;
         int frameCount, currentFrame;
         float timeElapsed, frameTime;
         Vec2 scale;

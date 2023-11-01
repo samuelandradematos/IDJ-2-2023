@@ -9,11 +9,9 @@ SDL_Texture* Resources::GetImage(std::string file) {
     if (imageTable.find(file) != imageTable.end()) {
         return imageTable.find(file)->second;
     }
-    Game& game = Game::GetInstance();
-    SDL_Texture* aux = IMG_LoadTexture(game.GetRenderer(), file.c_str());
+    SDL_Texture* aux = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
     if (aux == nullptr) {
         std::cout << SDL_GetError() << std::endl;
-        return aux;
     }
     imageTable.insert({file,aux});
     return aux;

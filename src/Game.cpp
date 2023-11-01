@@ -70,6 +70,7 @@ void Game::Run() {
         state->Update(dt);
         state->Render();
         SDL_RenderPresent(renderer);
+        SDL_Delay(33);
     }
     Resources::ClearSounds();
     Resources::ClearMusics();

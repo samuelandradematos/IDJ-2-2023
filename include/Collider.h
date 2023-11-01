@@ -8,13 +8,14 @@
 
 class Collider : public Component {
     public:
-        Collider(GameObject& associated, Vec2 scale = {1, 1}, Vec2 offset = {0, 0});
+        Collider(GameObject& assGO, Vec2 scale = {1, 1}, Vec2 offset = {0, 0});
         void Update(float dt);
         void Render();
         bool Is(std::string type);
         void SetScale(Vec2 scaleNew);
         void SetOffset(Vec2 offsetNew);
         Rect box;
+        void NotifyCollision(GameObject& other);
 
     static inline bool IsColliding(Rect& a, Rect& b, float angleOfA, float angleOfB) {
         Vec2 A[] = { Vec2( a.x, a.y + a.h ),

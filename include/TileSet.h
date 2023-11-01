@@ -1,12 +1,9 @@
-//
-// Created by samuc on 20/09/2023.
-//
-
 #ifndef INCLUDE_TILESET_H_
 #define INCLUDE_TILESET_H_
 #include <string>
 #include "Sprite.h"
 #include "GameObject.h"
+
 
 class TileSet {
     public:

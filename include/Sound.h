@@ -20,6 +20,7 @@ class Sound : public Component {
         void Render();
         bool Is(std::string type);
         void Start();
+        void NotifyCollision(GameObject& other);
     private:
         Mix_Chunk* chunk;
         int channel;

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "Camera.h"
 
 
 TileMap::TileMap(GameObject& associated, const std::string& file, TileSet* tileSet) : Component(associated){
@@ -107,3 +108,5 @@ void TileMap::SetParallax(float plx) {
 }
 
 void TileMap::Start() {}
+
+void TileMap::NotifyCollision(GameObject &other) {}

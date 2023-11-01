@@ -8,7 +8,6 @@
 #include "GameObject.h"
 #include "Vec2.h"
 #include "Sound.h"
-#include "Face.h"
 #include "TileMap.h"
 #include "InputManager.h"
 #include "Camera.h"

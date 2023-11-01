@@ -19,6 +19,7 @@ class TileMap : public Component {
         int GetHeight();
         int GetDepth();
         void SetParallax(float parallax);
+        void NotifyCollision(GameObject& other);
     private:
         std::vector<int> tileMatrix;
         TileSet* tileSet;

@@ -1,17 +1,13 @@
 #include "State.h"
 #include <math.h>
 #include <algorithm>
+#include "Collider.h"
 
 
-State::State(): music("Recursos/audio/stageState.ogg") {
-    // Inicialização do critério de parada
-    quitRequested = false;
-
-    // Inicialização da flag de started
-    started = false;
+State::State(): music("Recursos/audio/stageState.ogg") , started(false), quitRequested(false) {
 
     // Inicialização do background e da música
-    auto* bgGO = new GameObject();
+    GameObject* bgGO = new GameObject();
     Sprite* bg = new Sprite((*bgGO), "Recursos/img/ocean.jpg");
     bgGO->AddComponent(bg);
     CameraFollower* cf = new CameraFollower((*bgGO));
@@ -21,7 +17,7 @@ State::State(): music("Recursos/audio/stageState.ogg") {
     music.Play();
 
     // Inicialização do TileSet e TileMap
-    auto* tileGO = new GameObject();
+    GameObject* tileGO = new GameObject();
     tileSet = new TileSet((*tileGO),64,64,"Recursos/img/tileset.png");
     tileMap = new TileMap((*tileGO),"Recursos/map/tileMap.txt",tileSet);
     tileMap->SetParallax(-0.5);
@@ -30,19 +26,19 @@ State::State(): music("Recursos/audio/stageState.ogg") {
     objectArray.emplace_back(tileGO);
 
     // Criação do Alien
-    auto* alienGO = new GameObject();
+    GameObject* alienGO = new GameObject();
     Alien* alien = new Alien((*alienGO),3);
     alienGO->AddComponent(alien);
     alienGO->box.SetCenter({512,300});
     objectArray.emplace_back(alienGO);
 
     // Creation of Penguin
-    auto* penguinBodyGO = new GameObject();
+    GameObject* penguinBodyGO = new GameObject();
     PenguinBody* penguinBody = new PenguinBody(*penguinBodyGO);
     penguinBodyGO->AddComponent(penguinBody);
-    penguinBodyGO->box.SetCenter({704, 640});
-    Camera::Follow(penguinBodyGO);
+    penguinBodyGO->box.SetCenter({730, 600});
     objectArray.emplace_back(penguinBodyGO);
+    Camera::Follow(penguinBodyGO);
 }
 
 State::~State() {
@@ -51,12 +47,11 @@ State::~State() {
     objectArray.clear();
 }
 
-void State::LoadAssets() {
-}
+void State::LoadAssets() {}
 
 void State::Update(float dt) {
     // Carrega a instancia de input
-    InputManager& im = InputManager::GetInstance();
+    InputManager &im = InputManager::GetInstance();
 
     // Camera
     Camera::Update(dt);
@@ -70,6 +65,33 @@ void State::Update(float dt) {
         objectArray.at(i)->Update(dt);
         if (objectArray.at(i)->IsDead()) {
             objectArray.erase(objectArray.begin() + i);
+        }
+    }
+
+    std::vector<std::shared_ptr<GameObject>> auxArray;
+
+    for (const auto &it: objectArray) {
+        if (it->GetComponent("Collider") != nullptr) {
+            auxArray.push_back(it);
+        }
+    }
+
+    for (int i = auxArray.size() - 1; i >= 0; i--) {
+        for (int j = i - 1; j >= 0; j--) {
+            Collider *iCollider = (Collider *) (auxArray.at(i)->GetComponent("Collider"));
+            Collider *jCollider = (Collider *) (auxArray.at(j)->GetComponent("Collider"));
+            if (
+                    Collider::IsColliding(
+                            iCollider->box,
+                            jCollider->box,
+                            auxArray.at(i)->angleDeg * DEGREE_TO_RAD,
+                            auxArray.at(j)->angleDeg * DEGREE_TO_RAD
+                    )
+                )
+            {
+                auxArray.at(i)->NotifyCollision(*auxArray.at(j));
+                auxArray.at(j)->NotifyCollision(*auxArray.at(i));
+            }
         }
     }
 }
@@ -86,9 +108,9 @@ bool State::QuitRequested() {
 
 void State::Start() {
     LoadAssets();
-    for (auto it : objectArray) {
-        if (!it->started)
-            it->Start();
+    for (int it = 0; it < objectArray.size();it++) {
+        if (!objectArray.at(it)->started)
+            objectArray.at(it)->Start();
     }
     started = true;
 }
@@ -96,7 +118,7 @@ void State::Start() {
 //
 std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
     std::shared_ptr<GameObject> sharedPtrGO(go);
-    objectArray.push_back(sharedPtrGO);
+    objectArray.emplace_back(sharedPtrGO);
     if (started) {
         sharedPtrGO->Start();
     }
@@ -106,7 +128,7 @@ std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
 
 //
 std::weak_ptr<GameObject> State::GetObjectPtr(GameObject *go) {
-    for (auto it : objectArray) {
+    for (const auto &it : objectArray) {
         if (it.get() == go)
             return std::weak_ptr<GameObject>(it);
     }

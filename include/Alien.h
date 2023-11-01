@@ -12,10 +12,15 @@
 #include "Game.h"
 #include "Minion.h"
 #include <algorithm>
+#include "Timer.h"
+#include "PenguinBody.h"
 
-#define ALIEN_SPEED 150
+#define ALIEN_SPEED 75
 #define ALIEN_HP 30
-#define ALIEN_ANGULARSPEED 30
+#define ALIEN_ANGULARSPEED 15
+#define ALIEN_REST_TIME 3
+#define ALIEN_DEATH_FRAME_COUNT 4
+#define ALIEN_DEATH_FRAME_TIME 6
 
 class Alien : public Component {
     public:
@@ -25,18 +30,24 @@ class Alien : public Component {
         void Render();
         void Update(float dt);
         bool Is(std::string type);
-        int pNMinions;
+        static int alienCount;
+        void NotifyCollision(GameObject& other);
+        void TakeDamage(int damage);
+        bool IsDead();
     private:
-        class Action {
-            public:
-                enum ActionType {MOVE, SHOOT};
-                Action(ActionType type, float x, float y);
-                ActionType type;
-                Vec2 pos;
-        };
+//        class Action {
+//            public:
+//                enum ActionType {MOVE, SHOOT};
+//                Action(ActionType type, float x, float y);
+//                ActionType type;
+//                Vec2 pos;
+//        };
+        enum AlienState {MOVING, RESTING};
+        AlienState state;
         Vec2 speed;
         int hp, nMinions;
-        std::queue<Action> taskQueue;
+        Timer restTimer;
+        Vec2 destination;
         std::vector<std::weak_ptr<GameObject>> minionArray;
 
 };

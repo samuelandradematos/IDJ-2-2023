@@ -11,15 +11,15 @@ Vec2::Vec2(float x, float y) {
     this->y = y;
 }
 
-Vec2 Vec2::operator+(const Vec2 &vetor2) {
+Vec2 Vec2::operator+(const Vec2 &vetor2) const {
     return Vec2(x + vetor2.x, y + vetor2.y);
 }
 
-Vec2 Vec2::operator-(const Vec2 &vetor2) {
+Vec2 Vec2::operator-(const Vec2 &vetor2) const {
     return Vec2(x - vetor2.x, y - vetor2.y);
 }
 
-Vec2 Vec2::operator*(const float rhs) {
+Vec2 Vec2::operator*(const float &rhs) const {
     return Vec2(x * rhs, y * rhs);
  }
 
@@ -38,7 +38,7 @@ float Vec2::Magnitude() {
 }
 
 Vec2 Vec2::NormalizeVec() {
-    return Vec2(x * (1.f / this->Magnitude()), y * (1.f / this->Magnitude()));
+    return *this * (1.f / Magnitude());
 }
 
 float Vec2::DotProduct(Vec2 vetor2) {
@@ -47,16 +47,6 @@ float Vec2::DotProduct(Vec2 vetor2) {
 
 float Vec2::DistToOrigin() {
     return (float) sqrt(pow(x,2) + pow(y, 2));
-}
-
-void Vec2::RotatedDegree(float angulo) {
-    x = GetRotated((angulo * M_PI) / 180).x;
-    y = GetRotated((angulo * M_PI) / 180).y;
-}
-
-void Vec2::Add(Vec2 vec) {
-    x += vec.x;
-    y += vec.y;
 }
 
 void Vec2::Rotate(float angle) {
@@ -92,6 +82,6 @@ void Vec2::DefPosByDistanceToObjCentered(Vec2 object, float distance, float angl
 }
 
 float Vec2::DistToVec(Vec2 vec) {
-    return (float) sqrt(pow((x - vec.x) , 2) + pow((y - vec.y), 2));
+    return (*this - vec).Magnitude();
 }
 

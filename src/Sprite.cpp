@@ -1,13 +1,15 @@
 #include <iostream>
 #include "Sprite.h"
+#include "Camera.h"
 #include "Game.h"
 #include "Resources.h"
 
 
 Sprite::Sprite(GameObject& associated): Component(associated), scale({1,1}), texture(nullptr), started(false) {}
 
-Sprite::Sprite(GameObject& associated, const std::string& file, int frameCount, float frameTime)
+Sprite::Sprite(GameObject& associated, const std::string& file, int frameCount, float frameTime, float secondsToSelfDestruct)
 : Component(associated),
+    secondsToSelfDestruct(secondsToSelfDestruct),
     frameCount(frameCount),
     currentFrame(0),
     timeElapsed(0.0),
@@ -17,8 +19,7 @@ Sprite::Sprite(GameObject& associated, const std::string& file, int frameCount, 
     started(false)
 {
     Open(file);
-    associated.box.h = (float)height;
-    associated.box.w = (float)width;
+    std::cout << "Loaded Sprite: |" << file << "|" << std::endl;
 }
 
 Sprite::~Sprite() {}
@@ -37,7 +38,7 @@ void Sprite::Open(const std::string& file) {
         return;
     }
     SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-    SetClip(0, 0, width, height);
+    SetClip(0, 0, width/frameCount, height);
 }
 
 void Sprite::SetClip(int x, int y, int w, int h) {
@@ -46,8 +47,8 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.w = w;
     clipRect.h = h;
 
-    associated.box.w = w;
-    associated.box.h = h;
+    associated.box.w = w * scale.x;
+    associated.box.h = h * scale.y;
 }
 
 void Sprite::Render() {
@@ -55,7 +56,7 @@ void Sprite::Render() {
 }
 
 void Sprite::Render(int x, int y) {
-    SDL_Rect dstRect = {x - (int)Camera::pos.x, y - (int)Camera::pos.y, (int)associated.box.w, (int)associated.box.h};
+    SDL_Rect dstRect = {x - (int)Camera::pos.x, y - (int)Camera::pos.y, (int)(clipRect.w * GetScale().x), (int)(clipRect.h * GetScale().y)};
     int RENDER_ERROR = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect, associated.angleDeg, nullptr, SDL_FLIP_NONE);
 
     if (RENDER_ERROR != 0) {
@@ -93,7 +94,18 @@ bool Sprite::IsOpen() {
 
 void Sprite::Update(float dt) {
     timeElapsed += dt;
-    if (timeElapsed >= frameTime) {
+
+    if (secondsToSelfDestruct > 0) {
+        selfDestructCount.Update(dt);
+        if (selfDestructCount.Get() > secondsToSelfDestruct) {
+            associated.RequestDelete();
+        } else if (timeElapsed >= frameTime) {
+            currentFrame = (currentFrame + 1) % frameCount;
+
+            SetFrame(currentFrame);
+            timeElapsed = 0;
+        }
+    } else if (timeElapsed >= frameTime) {
         currentFrame = (currentFrame + 1) % frameCount;
 
         SetFrame(currentFrame);

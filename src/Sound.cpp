@@ -46,3 +46,5 @@ bool Sound::Is(std::string type) {
 }
 
 void Sound::Start() {}
+
+void Sound::NotifyCollision(GameObject &other) {}

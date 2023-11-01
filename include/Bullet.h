@@ -11,12 +11,27 @@ class Bullet : public Component {
         float distanceLeft;
         int damage;
     public:
-        Bullet(GameObject& associated, float angle, float newSpeed, int newDamage, float maxDistance, std::string sprite, int frameCount, float frameTime);
+        bool targetsPlayer;
+        bool targetsEnemy;
+        Bullet(
+                GameObject& assGO,
+                float angle,
+                float newSpeed,
+                int newDamage,
+                float maxDistance,
+                std::string sprite,
+                int frameCount,
+                float frameTime,
+                float secondsToSelfDestruct = 0,
+                bool isPlayer = false,
+                bool isEnemy = false
+                );
         void Update(float dt);
         void Render();
         void Start();
         bool Is(std::string type);
         int GetDamage();
+        void NotifyCollision(GameObject& other);
 };
 
 #endif //INCLUDE_BULLET_H_

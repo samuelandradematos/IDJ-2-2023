@@ -1,6 +1,4 @@
 #include <iostream>
-#include <typeinfo>
-#include <SDL.h>
 #include "GameObject.h"
 
 GameObject::GameObject() : angleDeg(0), started(false), isDead(false) {}
@@ -34,6 +32,12 @@ bool GameObject::IsDead() {
 
 void GameObject::RequestDelete() {
     isDead = true;
+}
+
+void GameObject::NotifyCollision(GameObject &other) {
+    for (const auto & it : components){
+        it->NotifyCollision(other);
+    }
 }
 
 void GameObject::AddComponent(Component* cpt) {
