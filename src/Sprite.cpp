@@ -25,7 +25,6 @@ Sprite::Sprite(GameObject& associated, const std::string& file, int frameCount, 
 Sprite::~Sprite() {}
 
 void Sprite::Open(const std::string& file) {
-    Game& game = Game::GetInstance();
     if (texture != nullptr) {
         texture = Resources::GetImage(file);
         if (texture != nullptr)
