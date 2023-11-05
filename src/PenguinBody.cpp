@@ -1,5 +1,9 @@
 #include "PenguinBody.h"
 #include "Collider.h"
+#include "InputManager.h"
+#include "Sound.h"
+#include "Camera.h"
+#include "GameData.h"
 
 PenguinBody* PenguinBody::player;
 
@@ -8,7 +12,7 @@ PenguinBody::PenguinBody(GameObject &assGO)
     speed({0, 0}),
     linearSpeed(0),
     angle(0),
-    hp(PENGUI_HP)
+    hp(PENGUIN_HP)
 {
     Sprite* penguinBody = new Sprite(associated, "Recursos/img/penguin.png");
     associated.AddComponent(penguinBody);
@@ -19,14 +23,20 @@ PenguinBody::PenguinBody(GameObject &assGO)
 }
 
 PenguinBody::~PenguinBody() {
+
     player = nullptr;
+    Camera::Unfollow();
+    #ifdef DEBUG
+        std::cout << "~PenguinBody()" << std::endl;
+    #endif // DEBUG
 }
 
 void PenguinBody::Start() {
     auto pcGO = new GameObject();
-    PenguinCannon* pc = new PenguinCannon(*pcGO,Game::GetInstance().GetState()->GetObjectPtr(&associated));
+    PenguinCannon* pc = new PenguinCannon(*pcGO,Game::GetInstance().GetCurrentState().GetObjectPtr(&associated));
     pcGO->AddComponent(pc);
-    pcannon = Game::GetInstance().GetState()->AddObject(pcGO);
+    pcannon = Game::GetInstance().GetCurrentState().AddObject(pcGO);
+    std::cout << "Penguin Body Start" << std::endl;
 }
 
 void PenguinBody::Update(float dt) {
@@ -72,8 +82,29 @@ void PenguinBody::Update(float dt) {
         angle += BODY_ANGULAR_SPEED * dt;
     }
 
-    associated.box.x += speed.x;
-    associated.box.y += speed.y;
+    if (associated.box.x >= 1408 && speed.x >= 0) {
+        associated.box.x = 1408;
+    } else {
+        associated.box.x += speed.x;
+    }
+
+    if (associated.box.x <= 0 && speed.x <= 0) {
+        associated.box.x = 0;
+    } else {
+        associated.box.x += speed.x;
+    }
+
+    if (associated.box.y >= 1280 && speed.y >= 0) {
+        associated.box.y = 1280;
+    } else {
+        associated.box.y += speed.y;
+    }
+
+    if (associated.box.y <= 0 && speed.y <= 0) {
+        associated.box.y = 0;
+    } else {
+        associated.box.y += speed.y;
+    }
 
     associated.box.GetCenter().Rotate(angle);
 
@@ -84,25 +115,27 @@ void PenguinBody::Update(float dt) {
         std::cout << "Penguin morreu" << std::endl;
         pcannon.lock()->RequestDelete();
 
-        float penguinDeathTimeLimit = dt * PENGUIN_DEATH_FRAME_TIME * PENGUIN_DEATH_FRAME_COUNT;
+        float penguinDeathTimeLimit = 0.2 * PENGUIN_DEATH_FRAME_COUNT + dt;
 
         GameObject* penguinDeathGO = new GameObject();
         penguinDeathGO->box.SetCenter(associated.box.GetCenter());
 
-        Sprite* alienDeathSprite = new Sprite(
+        Sprite* penguinDeathSprite = new Sprite(
                 *penguinDeathGO,
                 "Recursos/img/penguindeath.png",
                 4,
-                dt * PENGUIN_DEATH_FRAME_TIME,
+                0.2,
                 penguinDeathTimeLimit
         );
-        penguinDeathGO->AddComponent(alienDeathSprite);
+        penguinDeathGO->AddComponent(penguinDeathSprite);
 
         Sound* penguinDeathSound = new Sound(*penguinDeathGO,"Recursos/audio/boom.wav");
         penguinDeathSound->Play();
         penguinDeathGO->AddComponent(penguinDeathSound);
+        penguinDeathGO->HoldEnd();
+        Game::GetInstance().GetCurrentState().AddObject(penguinDeathGO);
 
-        Game::GetInstance().GetState()->AddObject(penguinDeathGO);
+        GameData::playerVictory = false;
 
         Camera::Unfollow();
         associated.RequestDelete();
@@ -112,8 +145,15 @@ void PenguinBody::Update(float dt) {
 
 void PenguinBody::NotifyCollision(GameObject &other) {
     if (other.GetComponent("Bullet") != nullptr) {
-        if (((Bullet *) (other.GetComponent("Bullet")))->targetsPlayer) {
-            int damage = ((Bullet *) (other.GetComponent("Bullet")))->GetDamage();
+        Bullet* bullet = (Bullet*)other.GetComponent("Bullet");
+        if (bullet->targetsPlayer) {
+            static int count = 1;
+            std::cout << "PenguinBody collision notified: " << count << std::endl;
+            count++;
+        }
+        if (bullet->targetsPlayer) {
+             std::cout << "Acertou player";
+            int damage = bullet->GetDamage();
             TakeDamage(damage);
         }
     }

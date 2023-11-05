@@ -85,3 +85,19 @@ float Vec2::DistToVec(Vec2 vec) {
     return (*this - vec).Magnitude();
 }
 
+float Vec2::Mag(const Vec2 &p) {
+    return std::sqrt(p.x * p.x + p.y * p.y);
+}
+
+Vec2 Vec2::Norm(const Vec2 &p) {
+    return p * (1.f / Mag(p));
+}
+
+float Vec2::Dot(const Vec2 &a, const Vec2 &b) {
+    return a.x * b.x + a.y * b.y;
+}
+
+Vec2 Vec2::Rotate(const Vec2 &p, float angle) {
+    float cs = std::cos(angle), sn = std::sin(angle);
+    return Vec2(p.x * cs - p.y * sn, p.x * sn - p.y * cs);
+}

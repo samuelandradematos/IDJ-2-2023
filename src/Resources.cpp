@@ -4,6 +4,7 @@
 std::unordered_map<std::string, SDL_Texture*> Resources::imageTable;
 std::unordered_map<std::string, Mix_Music*> Resources::musicTable;
 std::unordered_map<std::string, Mix_Chunk*> Resources::soundTable;
+std::unordered_map<std::string, TTF_Font*> Resources::fontTable;
 
 SDL_Texture* Resources::GetImage(std::string file) {
     if (imageTable.find(file) != imageTable.end()) {
@@ -63,4 +64,37 @@ void Resources::ClearSounds() {
         Mix_FreeChunk(it.second);
     }
     soundTable.clear();
+}
+
+TTF_Font* Resources::GetFont(std::string file, int pointSize) {
+    std::string sizeString = " ";
+    sizeString.append(std::to_string(pointSize));
+    std::string fontFileIndexed = file;
+    fontFileIndexed.append(sizeString);
+
+    try {
+        if (fontTable.find(fontFileIndexed) != fontTable.end()) {
+            return fontTable.find(fontFileIndexed)->second;
+        }
+
+        TTF_Font *auxFont = TTF_OpenFont(file.c_str(), pointSize);
+        if (auxFont == nullptr) {
+            std::cout << SDL_GetError() << std::endl;
+            throw std::runtime_error("Failed to load font file " + file);
+        }
+
+        fontTable.insert({fontFileIndexed, auxFont});
+        return auxFont;
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return nullptr;
+    }
+}
+
+void Resources::ClearFonts() {
+    for (const auto & it : fontTable){
+        TTF_CloseFont(it.second);
+    }
+
+    fontTable.clear();
 }

@@ -1,10 +1,13 @@
 #include <iostream>
 #include "GameObject.h"
 
-GameObject::GameObject() : angleDeg(0), started(false), isDead(false) {}
+GameObject::GameObject() : angleDeg(0), started(false), isDead(false), holdEnd(false) {}
 
 GameObject::~GameObject() {
     components.clear();
+    #ifdef DEBUG
+        std::cout << "~GameObject()" << std::endl;
+    #endif // DEBUG
 }
 
 void GameObject::Update(float dt) {
@@ -20,8 +23,8 @@ void GameObject::Render() {
 }
 
 void GameObject::Start() {
-    for (const auto & it : components){
-        it->Start();
+    for (long long unsigned it = 0; it < components.size(); it++){
+        components.at(it)->Start();
     }
     started = true;
 }
@@ -31,12 +34,16 @@ bool GameObject::IsDead() {
 }
 
 void GameObject::RequestDelete() {
-    isDead = true;
+    if (holdEnd) {
+        isDead = false;
+    } else {
+        isDead = true;
+    }
 }
 
 void GameObject::NotifyCollision(GameObject &other) {
-    for (const auto & it : components){
-        it->NotifyCollision(other);
+    for (long long unsigned it = 0; it < components.size() ; it++){
+        components.at(it)->NotifyCollision(other);
     }
 }
 
@@ -61,4 +68,16 @@ Component* GameObject::GetComponent(const std::string& type) {
         }
     }
     return nullptr;
+}
+
+void GameObject::HoldEnd() {
+    holdEnd = true;
+}
+
+bool GameObject::IsHoldingEnd() {
+    return holdEnd;
+}
+
+void GameObject::ReleaseEnd() {
+    holdEnd = false;
 }

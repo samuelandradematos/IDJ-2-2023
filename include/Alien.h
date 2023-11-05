@@ -16,7 +16,7 @@
 #include "PenguinBody.h"
 
 #define ALIEN_SPEED 75
-#define ALIEN_HP 30
+#define ALIEN_HP 60
 #define ALIEN_ANGULARSPEED 15
 #define ALIEN_REST_TIME 3
 #define ALIEN_DEATH_FRAME_COUNT 4
@@ -37,20 +37,13 @@ class Alien : public Component {
         void TakeDamage(int damage);
         bool IsDead();
     private:
-//        class Action {
-//            public:
-//                enum ActionType {MOVE, SHOOT};
-//                Action(ActionType type, float x, float y);
-//                ActionType type;
-//                Vec2 pos;
-//        };
         enum AlienState {MOVING, RESTING};
         AlienState state;
         Vec2 speed;
         int hp, nMinions;
         Timer restTimer;
         Vec2 destination;
-        bool xMovFisinhed, yMovFinished;
+        bool xMovFinished, yMovFinished;
         std::vector<std::weak_ptr<GameObject>> minionArray;
 
 };

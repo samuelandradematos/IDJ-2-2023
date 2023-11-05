@@ -7,25 +7,38 @@
 
 Sprite::Sprite(GameObject& associated): Component(associated), scale({1,1}), texture(nullptr), started(false) {}
 
-Sprite::Sprite(GameObject& associated, const std::string& file, int frameCount, float frameTime, float secondsToSelfDestruct)
+Sprite::Sprite(
+        GameObject& associated,
+        const std::string& file,
+        int frameCount,
+        float frameTime,
+        float secondsToSelfDestruct,
+        bool loopAnimation)
 : Component(associated),
     secondsToSelfDestruct(secondsToSelfDestruct),
+    loopAnimation(loopAnimation),
     frameCount(frameCount),
     currentFrame(0),
     timeElapsed(0.0),
     frameTime(frameTime),
     scale({1,1}),
     texture(nullptr),
-    started(false)
+    started(false),
+    animationDone(true)
 {
+    if (secondsToSelfDestruct != 0) {
+        animationDone = false;
+    }
     Open(file);
-    std::cout << "Loaded Sprite: |" << file << "|" << std::endl;
 }
 
-Sprite::~Sprite() {}
+Sprite::~Sprite() {
+    #ifdef DEBUG
+        std::cout << "~Sprite()" << std::endl;
+    #endif // DEBUG
+}
 
 void Sprite::Open(const std::string& file) {
-    Game& game = Game::GetInstance();
     if (texture != nullptr) {
         texture = Resources::GetImage(file);
         if (texture != nullptr)
@@ -106,10 +119,23 @@ void Sprite::Update(float dt) {
             timeElapsed = 0;
         }
     } else if (timeElapsed >= frameTime) {
-        currentFrame = (currentFrame + 1) % frameCount;
+        if (!loopAnimation) {
+            if (currentFrame >= frameCount) {
+                SetFrame(frameCount);
+                SetFrameCount(1);
+                SetFrameTime(1);
+                loopAnimation = true;
+            } else {
+                currentFrame = (currentFrame + 1) % frameCount;
+                SetFrame(currentFrame);
+                timeElapsed = 0;
+            }
+        } else {
+            currentFrame = (currentFrame + 1) % frameCount;
 
-        SetFrame(currentFrame);
-        timeElapsed = 0;
+            SetFrame(currentFrame);
+            timeElapsed = 0;
+        }
     }
 }
 
@@ -132,4 +158,6 @@ void Sprite::SetFrameTime(float newFrameTime) {
     frameTime = newFrameTime;
 }
 
-
+bool Sprite::AnimationCompleted() {
+    return animationDone;
+}

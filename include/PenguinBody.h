@@ -5,14 +5,15 @@
 #include "Vec2.h"
 #include "Sprite.h"
 #include "PenguinCannon.h"
-#include "State.h"
+#include "StageState.h"
 #define BODY_ACCELERATION 10
 #define BODY_MAX_SPEED 40
 #define BODY_MIN_SPEED -40
 #define BODY_ANGULAR_SPEED 5
-#define PENGUIN_DEATH_FRAME_TIME 100
+#define PENGUIN_DEATH_FRAME_TIME 10
 #define PENGUIN_DEATH_FRAME_COUNT 4
-#define PENGUI_HP 100
+#define PENGUIN_HP 30
+
 
 class PenguinBody : public Component {
     public:

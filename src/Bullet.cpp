@@ -15,14 +15,15 @@ Bullet::Bullet(
                 float frameTime,
                 float secondsToSelfDestruct,
                 bool targetIsPlayer,
-                bool targetIsEnemy
+                bool targetIsEnemy,
+                bool loopAnimation
                 ) : Component(assGO),
                     distanceLeft(maxDistance),
                     damage(newDamage),
                     targetsPlayer(targetIsPlayer),
                     targetsEnemy(targetIsEnemy)
 {
-    Sprite* bulletSprite = new Sprite(associated, sprite, frameCount, frameTime, secondsToSelfDestruct);
+    Sprite* bulletSprite = new Sprite(associated, sprite, frameCount, frameTime, secondsToSelfDestruct, loopAnimation);
     associated.AddComponent(bulletSprite);
     Collider* bulletCollider = new Collider(associated);
     associated.AddComponent(bulletCollider);
@@ -100,3 +101,7 @@ int Bullet::GetDamage() {
 }
 
 void Bullet::Start() {}
+
+float Bullet::GetDistanceLeft() {
+    return distanceLeft;
+}

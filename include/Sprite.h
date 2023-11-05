@@ -12,7 +12,7 @@
 class Sprite: public Component {
     public:
         Sprite(GameObject& associated);
-        Sprite(GameObject& associated, const std::string& file, int frameCount = 1, float frameTime = 1, float secondsToSelfDestruct = 0);
+        Sprite(GameObject& associated, const std::string& file, int frameCount = 1, float frameTime = 1, float secondsToSelfDestruct = 0, bool loopAnimation = true);
         ~Sprite();
         void Open(const std::string& file);
         void SetClip(int x, int y, int w, int h);
@@ -29,8 +29,10 @@ class Sprite: public Component {
         void SetFrame(int newFrame);
         void SetFrameCount(int newFrameCount);
         void SetFrameTime(float newFrameTime);
+        bool AnimationCompleted();
     private:
         float secondsToSelfDestruct;
+        bool loopAnimation;
         Timer selfDestructCount;
         int frameCount, currentFrame;
         float timeElapsed, frameTime;
@@ -41,5 +43,6 @@ class Sprite: public Component {
         int height;
         SDL_Rect clipRect;
         bool started;
+        bool animationDone;
 };
 #endif  // INCLUDE_SPRITE_H_

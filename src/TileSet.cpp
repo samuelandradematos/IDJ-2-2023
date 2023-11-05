@@ -5,8 +5,12 @@ TileSet::TileSet(GameObject& associated, int tileWidth, int tileHeight, std::str
     if (tileSet.IsOpen()) {
         columns = tileSet.GetWidth() / tileW;
         rows = tileSet.GetHeight() / tileH;
-
     }
+    std::cout << "TileSet()" << std::endl;
+}
+
+TileSet::~TileSet() {
+    std::cout << "~TileSet()" << std::endl;
 }
 
 void TileSet::RenderTile(unsigned index, float x, float y) {

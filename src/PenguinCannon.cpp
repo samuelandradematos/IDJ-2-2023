@@ -1,5 +1,8 @@
 #include "PenguinCannon.h"
 #include "Collider.h"
+#include "InputManager.h"
+#include "Camera.h"
+#include "PenguinBody.h"
 
 PenguinCannon::PenguinCannon(GameObject &assGO, std::weak_ptr<GameObject> penguinBody)
 : Component(assGO),
@@ -8,6 +11,9 @@ PenguinCannon::PenguinCannon(GameObject &assGO, std::weak_ptr<GameObject> pengui
 {
     Sprite* penguinCannon = new Sprite(associated, "Recursos/img/cubngun.png");
     associated.AddComponent(penguinCannon);
+
+    associated.box.SetCenter(pBody.lock()->box.GetCenter());
+
     Collider* pcCollider = new Collider(associated);
     associated.AddComponent(pcCollider);
 }
@@ -20,6 +26,7 @@ void PenguinCannon::Update(float dt) {
         associated.box.SetCenter(pBody.lock()->box.GetCenter());
         Vec2 mousePos = Vec2(InputManager::GetInstance().GetMouseX(), InputManager::GetInstance().GetMouseY());
         Vec2 rotation = (associated.box.GetCenter() - mousePos) - Camera::pos;
+        rotation.Rotate(M_PI);
         associated.angleDeg = rotation.GetAngleDeg();
     } else {
         associated.RequestDelete();
@@ -34,8 +41,13 @@ void PenguinCannon::NotifyCollision(GameObject &other) {
     if (other.GetComponent("Bullet") != nullptr) {
         Bullet* bullet = ((Bullet *) (other.GetComponent("Bullet")));
         if (bullet->targetsPlayer) {
-            PenguinBody* penguinBodyPtr = (PenguinBody*)(pBody.lock()->GetComponent("PenguinBody"));
-            int damage = ((Bullet *) (other.GetComponent("Bullet")))->GetDamage();
+            static int count = 1;
+            std::cout << "PenguinCannon collision notified: " << count << std::endl;
+            count++;
+        }
+        if (bullet->targetsPlayer && bullet->GetDistanceLeft() <= BULLET_MIN_DIST) {
+            PenguinBody *penguinBodyPtr = (PenguinBody *) (pBody.lock()->GetComponent("PenguinBody"));
+            int damage = bullet->GetDamage();
             penguinBodyPtr->TakeDamage(damage);
         }
     }
@@ -88,7 +100,8 @@ void PenguinCannon::Shoot() {
                 0.25,
                 0,
                 false,
-                true
+                true,
+                false
         );
         bulletGO->AddComponent(bullet);
 
@@ -100,7 +113,7 @@ void PenguinCannon::Shoot() {
 
         bulletGO->box.SetCenter(posBulletCannon);
 
-        Game::GetInstance().GetState()->AddObject(bulletGO);
+        Game::GetInstance().GetCurrentState().AddObject(bulletGO);
 
         shootCooldown.Restart();
     }

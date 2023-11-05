@@ -1,15 +1,18 @@
 #include "Alien.h"
 #include "Collider.h"
+#include "Sound.h"
+#include "GameData.h"
+
 
 int Alien::alienCount = 0;
 
 Alien::Alien(GameObject &assoGo, int nMns)
 : Component(assoGo),
-    state{AlienState::RESTING},
-    hp(ALIEN_HP),
-    nMinions(nMns),
-    xMovFisinhed(false),
-    yMovFinished(false)
+  state{AlienState::RESTING},
+  hp(ALIEN_HP),
+  nMinions(nMns),
+  xMovFinished(false),
+  yMovFinished(false)
 {
     Sprite* alienSprite = new Sprite(associated,"Recursos/img/alien.png");
     associated.AddComponent(alienSprite);
@@ -22,10 +25,11 @@ Alien::Alien(GameObject &assoGo, int nMns)
 //Alien::Action::Action(Alien::Action::ActionType type, float x, float y) : type(type), pos(x,y) {}
 
 Alien::~Alien() {
-    for (int i = minionArray.size() - 1; i >= 0 ; i--) {
-        minionArray.erase(minionArray.begin() + i);
-    }
+    minionArray.clear();
     alienCount--;
+    #ifdef DEBUG
+        std::cout << "~Alien()" << std::endl;
+    #endif // DEBUG
 }
 
 void Alien::Start() {
@@ -34,19 +38,18 @@ void Alien::Start() {
     while(i < nMinions) {
         GameObject* minionGO = new GameObject();
 
-        Minion* minion = new Minion(*minionGO,Game::GetInstance().GetState()->GetObjectPtr(&associated),distMinions * i);
+        Minion* minion = new Minion(*minionGO,Game::GetInstance().GetCurrentState().GetObjectPtr(&associated),distMinions * i);
         minionGO->AddComponent(minion);
 
-        minionArray.push_back(Game::GetInstance().GetState()->AddObject(minionGO));
+        minionArray.push_back(Game::GetInstance().GetCurrentState().AddObject(minionGO));
         i++;
-
     }
+
+    std::cout << "Alien Start" << std::endl;
 }
 
 void Alien::Update(float dt) {
     associated.angleDeg += dt * ALIEN_ANGULARSPEED;
-
-    InputManager& im = InputManager::GetInstance();
 
     if (PenguinBody::player != nullptr) {
         if (state == AlienState::RESTING) {
@@ -62,7 +65,7 @@ void Alien::Update(float dt) {
                 destination.DefPosByDistanceToObjCentered(playerCenter,distance, movAngle * DEGREE_TO_RAD,associated.box.w, associated.box.h);
             }
         } else {
-            if (xMovFisinhed && yMovFinished) {
+            if (xMovFinished && yMovFinished) {
                 auto closestMinion = std::min_element(minionArray.begin(), minionArray.end(),
                                                       [&](const std::weak_ptr<GameObject> &minionA,
                                                           const std::weak_ptr<GameObject> &minionB) {
@@ -84,7 +87,7 @@ void Alien::Update(float dt) {
                     minionPtr->Shoot(PenguinBody::player->GetPlayerCenteredPos());
                     restTimer.Restart();
                     state = AlienState::RESTING;
-                    xMovFisinhed = false;
+                    xMovFinished = false;
                     yMovFinished = false;
                 } else {
                     std::cout << "Minion nao existe!" << std::endl;
@@ -97,7 +100,7 @@ void Alien::Update(float dt) {
                     associated.box.x += alienMov * cos(atan2(dist.y, dist.x));
                 } else {
                     associated.box.x = destination.x - (associated.box.w / 2);
-                    xMovFisinhed = true;
+                    xMovFinished = true;
                 }
 
                 if (fabsf(dist.y) > alienMov) {
@@ -128,8 +131,11 @@ void Alien::Update(float dt) {
         Sound* alienDeathSound = new Sound(*alienDeathGO,"Recursos/audio/boom.wav");
         alienDeathSound->Play();
         alienDeathGO->AddComponent(alienDeathSound);
+        alienDeathGO->HoldEnd();
+        Game::GetInstance().GetCurrentState().AddObject(alienDeathGO);
 
-        Game::GetInstance().GetState()->AddObject(alienDeathGO);
+        if (alienCount <= 0)
+            GameData::playerVictory = true;
 
         associated.RequestDelete();
     }
@@ -137,13 +143,20 @@ void Alien::Update(float dt) {
 }
 
 void Alien::NotifyCollision(GameObject &other) {
+
     if (other.GetComponent("Bullet") != nullptr) {
-        if (((Bullet *) (other.GetComponent("Bullet")))->targetsEnemy) {
+        Bullet* bullet = (Bullet *) (other.GetComponent("Bullet"));
+        if (bullet->targetsEnemy && bullet->GetDistanceLeft() <= BULLET_MIN_DIST) {
+            static int count = 1;
+            std::cout << "Alien collision notified: " << count << std::endl;
             std::cout << "Acertou alien" << std::endl;
-            int damage = ((Bullet *) (other.GetComponent("Bullet")))->GetDamage();
+            int damage = bullet->GetDamage();
             TakeDamage(damage);
+            count++;
         }
+
     }
+
 }
 
 void Alien::Render() {

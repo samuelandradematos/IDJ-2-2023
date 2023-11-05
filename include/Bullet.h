@@ -4,6 +4,8 @@
 #include "Vec2.h"
 #include "Sprite.h"
 #include <cmath>
+#define BULLET_MIN_DIST 30
+
 
 class Bullet : public Component {
     private:
@@ -24,7 +26,8 @@ class Bullet : public Component {
                 float frameTime,
                 float secondsToSelfDestruct = 0,
                 bool targetIsPlayer = false,
-                bool targetIsEnemy = false
+                bool targetIsEnemy = false,
+                bool loopAnimation = true
                 );
         void Update(float dt);
         void Render();
@@ -32,6 +35,7 @@ class Bullet : public Component {
         bool Is(std::string type);
         int GetDamage();
         void NotifyCollision(GameObject& other);
+        float GetDistanceLeft();
 };
 
 #endif //INCLUDE_BULLET_H_

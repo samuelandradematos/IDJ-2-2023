@@ -5,11 +5,18 @@
 #include "Camera.h"
 
 
-TileMap::TileMap(GameObject& associated, const std::string& file, TileSet* tileSet) : Component(associated){
+TileMap::TileMap(GameObject& associated, const std::string& file, TileSet* tileSet)
+: Component(associated),
+    parallax(0),
+    started(false)
+{
     Load(file);
     SetTileSet(tileSet);
-    parallax = 0;
-    started = false;
+    std::cout << "TitleMap()" << std::endl;
+}
+
+TileMap::~TileMap() {
+    std::cout << "~TileMap()" << std::endl;
 }
 
 void TileMap::Load(const std::string& file) {

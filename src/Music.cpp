@@ -13,7 +13,10 @@ Music::Music(const std::string& file) {
 
 Music::~Music() {
     Stop(0);
-    Mix_FreeMusic(music);
+//    Mix_FreeMusic(music);
+    #ifdef DEBUG
+        std::cout << "~Music()" << std::endl;
+    #endif // DEBUG
 }
 
 void Music::Play(int times) {

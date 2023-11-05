@@ -22,9 +22,13 @@ class GameObject {
         double angleDeg;
         bool started;
         void NotifyCollision (GameObject & other);
+        void HoldEnd();
+        bool IsHoldingEnd();
+        void ReleaseEnd();
     private:
         std::vector<std::unique_ptr<Component>> components;
         bool isDead;
+        bool holdEnd;
 };
 
 #endif  // INCLUDE_GAMEOBJECT_H_

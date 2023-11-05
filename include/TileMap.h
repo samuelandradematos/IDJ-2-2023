@@ -7,6 +7,7 @@
 class TileMap : public Component {
     public:
         TileMap(GameObject& associated, const std::string& file, TileSet* tileSet);
+        ~TileMap();
         void Load(const std::string& file);
         void SetTileSet(TileSet* newTileSet);
         int& At(int x, int y, int z = 0);

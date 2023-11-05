@@ -1,9 +1,14 @@
 #include "Game.h"
+#include "TitleState.h"
 
 int main(int argc, char** argv) {
-    Game& jogo = Game::GetInstance();
+    Game& game = Game::GetInstance();
 
-    jogo.Run();
+    TitleState* init = new TitleState();
+
+    game.Push(init);
+
+    game.Run();
 
     return 0;
 }

@@ -34,6 +34,10 @@ class Vec2 {
         Vec2 VecDefPosByDistanceToObjCentered(Vec2 object, float distance, float angleRad, float w, float h);
         void DefPosByDistanceToObjCentered(Vec2 object, float distance, float angleRad, float w, float h);
         float DistToVec(Vec2 vec);
+        static float Mag(const Vec2 &p);
+        static Vec2 Norm(const Vec2 &p);
+        static float Dot(const Vec2 &a, const Vec2 &b);
+        static Vec2 Rotate(const Vec2 &p, float angle);
 
 };
 

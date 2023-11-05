@@ -2,6 +2,8 @@
 #include "random"
 #include "chrono"
 #include "Collider.h"
+#include "Camera.h"
+#include "Alien.h"
 
 
 
@@ -80,15 +82,19 @@ void Minion::Shoot(Vec2 target) {
                             );
     bulletGO->AddComponent(bullet);
 
-    bulletGO->box.SetCenter(associated.box.GetCenter());
+    Vec2 posBullet;
 
-    Game::GetInstance().GetState()->AddObject(bulletGO);
+    posBullet.DefPosByDistanceToObjCentered(associated.box.GetCenter(),associated.box.w / 2,associated.angleDeg * DEGREE_TO_RAD, 0,0);
+
+    bulletGO->box.SetCenter(posBullet);
+
+    Game::GetInstance().GetCurrentState().AddObject(bulletGO);
 }
 
 void Minion::NotifyCollision(GameObject &other) {
     if (other.GetComponent("Bullet") != nullptr) {
         Bullet* bulletPtr = (Bullet*)other.GetComponent("Bullet");
-        if (bulletPtr->targetsPlayer) {
+        if (bulletPtr->targetsEnemy && bulletPtr->GetDistanceLeft() <= BULLET_MIN_DIST) {
             Alien* alienPtr = (Alien*)(alienCtr.lock()->GetComponent("Alien"));
             int damage = bulletPtr->GetDamage();
             alienPtr->TakeDamage(damage);

@@ -1,39 +1,38 @@
 #ifndef INCLUDE_STATE_H_
 #define INCLUDE_STATE_H_
-#include <iostream>
-#include <vector>
-#include <memory>
-#include "Music.h"
-#include "Sprite.h"
 #include "GameObject.h"
-#include "Vec2.h"
-#include "Sound.h"
-#include "TileMap.h"
-#include "InputManager.h"
-#include "Camera.h"
-#include "CameraFollower.h"
-#include "Alien.h"
-#include "PenguinBody.h"
 
 class State {
-    public:
-        State();
-        ~State();
-        bool QuitRequested();
-        void LoadAssets();
-        void Update(float dt);
-        void Render();
-        void Start();
-        std::weak_ptr<GameObject> AddObject(GameObject* go);
-        std::weak_ptr<GameObject> GetObjectPtr(GameObject* go);
-    private:
-        bool started;
-        Music music;
-        TileSet* tileSet;
-        TileMap* tileMap;
-        bool quitRequested;
-        void AddObject(int mouseX, int mouseY);
-        std::vector<std::shared_ptr<GameObject>> objectArray;
+public:
+    State();
+    virtual ~State();
+    virtual void LoadAssets() = 0;
+    virtual void Update(float dt) = 0;
+    virtual void Render() = 0;
+    virtual void Start() = 0;
+    virtual void Pause() = 0;
+    virtual void Resume() = 0;
+
+    virtual std::weak_ptr<GameObject> AddObject(GameObject *object);
+    virtual std::weak_ptr<GameObject> GetObjectPtr(GameObject *object);
+    virtual std::weak_ptr<GameObject> GetObjectPtrThatHasCpt(std::string type);
+
+    virtual bool StateInHold();
+
+    bool PopRequested();
+    bool QuitRequested();
+protected:
+    void StartArray();
+    virtual void UpdateArray(float dt);
+    virtual void RenderArray();
+
+    bool popRequested;
+    bool quitRequested;
+    bool started;
+
+    bool objectHoldingEnd;
+
+    std::vector<std::shared_ptr<GameObject>> objectArray;
 };
 
-#endif  // INCLUDE_STATE_H_
+#endif //INCLUDE_STATE_H_

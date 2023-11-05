@@ -23,7 +23,7 @@
 	#elif __linux__
 		#include "SDL.h"
 	#else
-		#error "Unknown compiler"
+		su#error "Unknown compiler"
 	#endif
 	#undef INCLUDE_SDL 
 #endif // INCLUDE_SDL

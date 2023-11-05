@@ -1,11 +1,11 @@
 #include "InputManager.h"
 #include <iostream>
 
+bool InputManager::quitRequested = false;
 
 InputManager::InputManager() :
 mouseState{false, false, false, false, false, false},
 mouseUpdate{0, 0, 0, 0, 0, 0},
-quitRequested(false),
 updateCounter(0),
 mouseX(0),
 mouseY(0) {}
@@ -18,6 +18,9 @@ void InputManager::Update() {
 
     // Captura a posição X e Y do mouse
     SDL_GetMouseState(&mouseX,&mouseY);
+
+    // Resets quitRequested
+    quitRequested = false;
 
     // Atualiza o counter
     updateCounter++;
@@ -58,6 +61,8 @@ void InputManager::Update() {
             }
         }
     }
+
+
 
 }
 
